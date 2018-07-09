@@ -6,36 +6,16 @@
   <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-  <div id="app">
     <img src="/imgs/alcyomics-logo.png" alt="Alcyomics Logo" class="logo">
-    <ul>
-        <li><a href="default.asp">Home</a></li>
-        <li><a href="news.asp">News</a></li>
-        <li><a href="contact.asp">Contact</a></li>
-        <li><a href="about.asp">About</a></li>
+    <ul class="bar">
+        <li class="bar-li"><button class="bar-li-btn">Load</button></li>
+        <li class="bar-li"><button class="bar-li-btn">Classify</button></li>
+        <li class="bar-li"><button class="bar-li-btn">Model</button></li>
+        <li class="bar-li"><button class="bar-li-btn">Predict</button></li>
+        <li class="bar-li-last"><button class="bar-li-btn">Login</button></li>
     </ul>
-
-    <h1>{{ greeting }}</h1>
-    <ul>
-      <li>
-        To learn more about Vue, visit
-        <a :href="docsURL" target="_blank">
-          {{ humanizeURL(docsURL) }}
-        </a>
-      </li>
-      <li>
-        For live help with simple questions, check out
-        <a :href="discordURL" target="_blank">
-          the Discord chat
-        </a>
-      </li>
-      <li>
-        For more complex questions, post to
-        <a :href="forumURL" target="_blank">
-          the forum
-        </a>
-      </li>
-    </ul>
+  <div id="app">
+  
   </div>
   <script src="app.js"></script>
 </body>

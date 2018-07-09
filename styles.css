@@ -1,42 +1,45 @@
-logo{
+@font-face{
+    font-family: brandon_grotesque;
+    src: url("fonts/Brandon Grotesque/Brandon_thin.otf") format("opentype");
+}
+
+.logo{
 
     display: block;
     margin-left: 10%;
-    width: 30%;
-    height: 30%;
+    margin-top:5%;
+    width: 20%;
+    height: 20%;
 
 }
 
-ul {
+.bar {
     list-style-type: none;
-    margin: 0;
+    margin-right: 10%;
+    margin-left: 10%;
     padding: 0;
     overflow: hidden;
-    background-color: #333;
 }
 
-li {
+.bar-li{
     float: left;
-    border-right:1px solid #bbb;
 }
 
-li:last-child {
+.bar-li-last{
     float: right;
     border-right: none;
 }
 
-li a {
+.bar-li-btn {
     display: block;
     color: white;
+    border-color: transparent;
+    font-family: brandon_grotesque;
     text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+    text-decoration: uppercase;
+    background-color: #4cb6c8;
 }
 
-li a:hover:not(.active) {
-    background-color: #111;
-}
-
-.active {
-    background-color: #4CAF50;
+.bar-li-btn:hover {
+    background-color: #ec70a8;
 }
