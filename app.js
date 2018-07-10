@@ -1,5 +1,5 @@
 
-var mongoose = require('mongoose');
+var mongoose = require('/node_modules/mongoose');
 
 var vueapp = new Vue({
       el: '#vue-app',
