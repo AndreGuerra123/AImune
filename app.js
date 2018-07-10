@@ -1,12 +1,12 @@
 
-//import Vue from 'vue';
-//import mongoose from 'mongoose';
+var unique = require('uniq');
+var data = [1, 2, 2, 3, 4, 5, 5, 5, 6];
 
 var vueapp = new Vue({
       el: '#vue-app',
       data: {
         log: false,
-        err:'',
+        err1:unique(data),
         username:'Username',
         password:'Password',
       },
