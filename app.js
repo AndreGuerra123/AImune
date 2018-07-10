@@ -31,7 +31,7 @@ new Vue({
         },
         login: function(){
           try{
-            mongoose.connect('mongodb://'+this.username+':'+this.password+'@localhost/admin?authSource=admin');
+            mongoose.connect('mongodb://'+this.username+':'+this.password+'@localhost:6666/admin?authSource=admin');
             this.log = true;
           }catch{
             mongoose.disconnect();
