@@ -23,7 +23,7 @@ var vueapp = new Vue({
         },
         login: function(){
           try{
-            //mongoose.connect('mongodb://'+this.username+':'+this.password+'@localhost:6666/admin?authSource=admin');
+            mongoose.connect('mongodb://'+this.username+':'+this.password+'@localhost:6666/admin?authSource=admin');
             this.log = true;
           }catch(err){
            this.err = err;
@@ -31,7 +31,9 @@ var vueapp = new Vue({
           }
         },
         logout: function(){
-          //mongoose.disconnect();
+          try{
+            mongoose.disconnect();
+          }
           this.username = 'Username';
           this.password = 'Password';
           this.log = false;
