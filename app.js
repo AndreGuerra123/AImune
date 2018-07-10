@@ -1,7 +1,3 @@
-
-var mongoose = require('mongoose');
-
-
 var vueapp = new Vue({
       el: '#vue-app',
       data: {
