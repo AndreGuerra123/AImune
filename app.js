@@ -1,5 +1,6 @@
 
-var mongoose = require('/node_modules/mongoose');
+//import Vue from 'vue';
+//import mongoose from 'mongoose';
 
 var vueapp = new Vue({
       el: '#vue-app',
