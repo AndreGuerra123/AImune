@@ -4,18 +4,21 @@
   <meta charset="utf-8">
   <title>AImune, Alcyomics</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="vue.min.js"></script>
+  <script src="https://unpkg.com/vue@2.5.16/dist/vue.js"></script>
 </head>
 <body>  
   <div id="vue-app">
     <img src="/imgs/alcyomics-logo.png" alt="Alcyomics Logo" class="logo">
-    <h1>{{user}}</h1>
     <ul class="bar">
         <li class="bar-li"><button class="bar-li-btn">Load</button></li>
         <li class="bar-li"><button class="bar-li-btn">Classify</button></li>
         <li class="bar-li"><button class="bar-li-btn">Model</button></li>
         <li class="bar-li"><button class="bar-li-btn">Predict</button></li>
-        <li class="bar-li-last"><button class="bar-li-btn">{{logactiondesc}}</button></li>
+        <li class="bar-li-last"><button class="bar-li-btn" v-on:click="logaction">{{logactiondesc()}}</button></li>
+        <li v-if="!log" class="bar-li-last"><input class="bar-li-btn" type="text" v-model:value="password"></input></li>
+        <li v-if="!log" class="bar-li-last"><input class="bar-li-btn" type="text" v-model:value="username"></input></li>
+        <li v-if="log" class="bar-li-last"><input class="bar-li-btn" type="text" v-model:value="greeting()"></input></li>
+
     </ul>
   </div>
   <script src="app.js"></script>
