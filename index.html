@@ -2,20 +2,20 @@
 <html>
 <head>
   <title>AImune, Alcyomics</title>
-  <script src="https://unpkg.com/vue"></script>
+  <script src="https://unpkg.com/vue"></script>  
   <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
+  <div id="app">
     <img src="/imgs/alcyomics-logo.png" alt="Alcyomics Logo" class="logo">
+    <h1>{{user}}</h1>
     <ul class="bar">
         <li class="bar-li"><button class="bar-li-btn">Load</button></li>
         <li class="bar-li"><button class="bar-li-btn">Classify</button></li>
         <li class="bar-li"><button class="bar-li-btn">Model</button></li>
         <li class="bar-li"><button class="bar-li-btn">Predict</button></li>
-        <li class="bar-li-last"><button class="bar-li-btn">Login</button></li>
+        <li class="bar-li-last"><button class="bar-li-btn">{{logactiondesc}}</button></li>
     </ul>
-  <div id="app">
-  
   </div>
   <script src="app.js"></script>
 </body>

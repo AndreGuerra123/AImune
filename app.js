@@ -1,16 +1,44 @@
 new Vue({
       el: '#app',
       data: {
-        greeting: 'Welcome to your Vue.js app!',
-        docsURL: 'http://vuejs.org/guide/',
-        discordURL: 'https://chat.vuejs.org',
-        forumURL: 'http://forum.vuejs.org/'
+        log: false,
+        user:"TEST",
+        userid:""
       },
       methods: {
-        humanizeURL: function (url) {
-          return url
-            .replace(/^https?:\/\//, '')
-            .replace(/\/$/, '')
+
+        logaction: function(){
+          if(this.log){
+            this.logout()
+          }else{
+            this.login()
+          }
+        },
+
+        logactiondesc: function(){
+          if(this.log){
+            return 'Logout';
+          }else{
+            return 'Login';
+          }
+        },
+
+        logout: function(){
+          this.log = false;
+          this.user = "";
+          this.userid = "";
+        },
+
+        login: function (user, pass) {
+          
+              try{
+
+
+              }catch{
+
+              
+              }
+
         }
       }
     })
