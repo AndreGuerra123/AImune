@@ -1,3 +1,6 @@
+
+var mongoose = require('mongoose');
+
 var vueapp = new Vue({
       el: '#vue-app',
       data: {
@@ -33,10 +36,12 @@ var vueapp = new Vue({
         logout: function(){
           try{
             mongoose.disconnect();
+          }finally{
+            this.username = 'Username';
+            this.password = 'Password';
+            this.log = false;
           }
-          this.username = 'Username';
-          this.password = 'Password';
-          this.log = false;
+
         },
         greeting: function(){
           return 'Welcome, '+this.username+'!'
