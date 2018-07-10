@@ -1,18 +1,14 @@
-const mongoose = require('mongoose');
 
-Vue.component('modal', {
-  template: '#modal-template'
-})
+var mongoose = require('mongoose');
 
 
-new Vue({
+var vueapp = new Vue({
       el: '#vue-app',
       data: {
         log: false,
+        err:'',
         username:'Username',
         password:'Password',
-        user:'',
-        userid:''
       },
       methods:{
         logactiondesc : function(){
@@ -31,23 +27,21 @@ new Vue({
         },
         login: function(){
           try{
-            mongoose.connect('mongodb://'+this.username+':'+this.password+'@localhost:6666/admin?authSource=admin');
+            //mongoose.connect('mongodb://'+this.username+':'+this.password+'@localhost:6666/admin?authSource=admin');
             this.log = true;
-          }catch{
-            mongoose.disconnect();
-            this.logout()
+          }catch(err){
+           this.err = err;
+           this.logout();
           }
-
         },
         logout: function(){
+          //mongoose.disconnect();
           this.username = 'Username';
           this.password = 'Password';
           this.log = false;
-
         },
         greeting: function(){
           return 'Welcome, '+this.username+'!'
         }
-
       }
     });
