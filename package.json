@@ -1,23 +1,19 @@
 {
-  "name": "aimune",
+  "name": "aimunefront",
   "version": "1.0.0",
-  "description": "simple webapp",
+  "description": "Simple WebApp created with MNVN stack.",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AndreGuerra123/AImune.git"
+    "url": "git+https://github.com/AndreGuerra123/AImuneFront.git"
   },
-  "author": "Andre Guerra",
+  "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/AndreGuerra123/AImune/issues"
+    "url": "https://github.com/AndreGuerra123/AImuneFront/issues"
   },
-  "homepage": "https://github.com/AndreGuerra123/AImune#readme",
-  "dependencies": {
-    "mongoose": "^5.2.3"
-  },
-  "devDependencies": {}
+  "homepage": "https://github.com/AndreGuerra123/AImuneFront#readme"
 }

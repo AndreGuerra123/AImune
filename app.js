@@ -1,6 +1,4 @@
 
-//const mongoclient = require('mongoose');
-
 var vueapp = new Vue({
       el: '#vue-app',
       data: {
@@ -29,8 +27,7 @@ var vueapp = new Vue({
         },
         login: function(){
             var vue = this;
-            var url = 'mongodb://'+this.username+':'+this.password+'@aimune.science:6666/admin?authSource=admin';
-            mongoclient.connect(url, function(err,db){
+            //TODO: LOGIN API CALL
             if(err){
               vue.error = true;
               vue.errormsg = err.toString();
@@ -40,8 +37,8 @@ var vueapp = new Vue({
               vue.log = true;
               vue.error = false;
               db.close();
-            }
-            });
+            };
+          
         },
 
         logout: function(){
