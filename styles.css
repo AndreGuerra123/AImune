@@ -39,6 +39,21 @@
     text-decoration: uppercase;
     background-color: #4cb6c8;
 }
+.bar-li-last-greet {
+  float:right;
+  color: white;
+  font-family: brandon_grotesque;
+  text-align: center;
+  background-color: #4cb6c8;
+}
+
+.bar-li-last-error {
+  float:rigth;
+  color: red;
+  font-family: brandon_grotesque;
+  text-align: center;
+  background-color: #4cb6c8;
+}
 
 .bar-li-btn:hover {
     background-color: #ec70a8;

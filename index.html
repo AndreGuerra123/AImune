@@ -9,7 +9,6 @@
 <body>  
   <div id="vue-app">
     <img src="/imgs/alcyomics-logo.png" alt="Alcyomics Logo" class="logo">
-    <h1>{{error}}</h1>
     <ul class="bar">
         <li class="bar-li"><button class="bar-li-btn">Load</button></li>
         <li class="bar-li"><button class="bar-li-btn">Classify</button></li>
@@ -18,10 +17,10 @@
         <li class="bar-li-last"><button class="bar-li-btn" v-on:click="logaction">{{logactiondesc()}}</button></li>
         <li v-if="!log" class="bar-li-last"><input class="bar-li-btn" type="text" v-model:value="password"></input></li>
         <li v-if="!log" class="bar-li-last"><input class="bar-li-btn" type="text" v-model:value="username"></input></li>
-        <li v-if="log" class="bar-li-last"><input class="bar-li-btn" type="text" v-model:value="greeting()"></input></li>
-
+        <li v-if="log" class="bar-li-last-greet">{{greeting}}</li>
+        <li v-if="error" class="bar-li-last-error">{{errormsg}}</li>
     </ul>
   </div>
-  <script src="app.js"></script>
+  <script src="bundle.js"></script>
 </body>
 </html>
