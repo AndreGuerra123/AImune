@@ -1,7 +1,3 @@
-const rest = axios.create({
-  baseURL: 'https://localhost:3000/',
-  timeout: 1000
-});
 
 var vueapp = new Vue({
   el: '#vue-app',
@@ -30,7 +26,7 @@ var vueapp = new Vue({
     },
     login: function () {
       var vue = this;
-      rest.post('https://aimune.science:3000/signin', {
+      axios.post('https://localhost:3000/signin', {
         username: vue.username,
         password: vue.password
       }).then(function (res) {
