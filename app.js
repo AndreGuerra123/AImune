@@ -26,7 +26,7 @@ var vueapp = new Vue({
     },
     login: function () {
       var vue = this;
-      axios.post('https://localhost:3000/signin', {
+      axios.post('http://aimune.science:3000/signin', {
         username: vue.username,
         password: vue.password
       }).then(function (res) {
