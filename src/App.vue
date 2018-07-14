@@ -18,24 +18,33 @@
 </template>
 
 <script>
-
-const {BACKEND} = require('./config/index.js');
+const { BACKEND } = require("./config/index.js");
 
 export default {
   name: "app",
+  data: function() {
+    return {
+      log: false,
+      error: "",
+      username: "",
+      password: "",
+      greeting: "",
+      token: ""
+    };
+  },
   methods: {
     logactiondesc: function() {
-      if (!log) {
+      if (!this.log) {
         return "Login";
       } else {
         return "Logout";
       }
     },
     logaction: function() {
-      if (!log) {
-        login();
+      if (!this.log) {
+        this.login();
       } else {
-        logout();
+        this.logout();
       }
     },
     login: function() {
