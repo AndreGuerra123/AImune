@@ -1,10 +1,5 @@
-var path = require('path');
-
 module.exports = {
-    entry: "./app.js",
-    output: {
-        path: path.resolve(__dirname,'./'),
-        filename: "bundle.js"
-    },
-    mode:"production"
+    entry: './app.js',
+    output: './bundle.js',
+    mode:'production'
   }
