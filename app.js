@@ -1,3 +1,4 @@
+const {BACKEND} = require('./config/index.js');
 
 var vueapp = new Vue({
   el: '#vue-app',
@@ -26,7 +27,7 @@ var vueapp = new Vue({
     },
     login: function () {
       var vue = this;
-      axios.post('http://aimune.science:3000/signin',{
+      axios.post(BACKEND+'signin',{
         username: vue.username,
         password: vue.password
       }).then(function (res) {
