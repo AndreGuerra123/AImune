@@ -3,7 +3,7 @@ import Vue from 'vue';
 import axios from 'axios';
 
 //Inhouse dependency
-const {BACKEND} = require('./config/index.js');
+const {BACKEND} = require('./configuration/index.js');
 
 //Vue main
 var vueapp = new Vue({
