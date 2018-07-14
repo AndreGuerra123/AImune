@@ -1,5 +1,5 @@
 //External Dependencies
-import Vue from 'Vue';
+import Vue from 'vue';
 import axios from 'axios';
 
 //Inhouse dependency
