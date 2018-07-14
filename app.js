@@ -1,3 +1,8 @@
+//External Dependencies
+import Vue from 'Vue';
+import axios from 'axios';
+
+//Inhouse dependency
 const {BACKEND} = require('./config/index.js');
 
 //Vue main
