@@ -1,5 +1,6 @@
 const {BACKEND} = require('./config/index.js');
 
+//Vue main
 var vueapp = new Vue({
   el: '#vue-app',
   data: {
