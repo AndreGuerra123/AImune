@@ -7,7 +7,7 @@
         <li class="bar-li"><button class="bar-li-btn">Classify</button></li>
         <li class="bar-li"><button class="bar-li-btn">Model</button></li>
         <li class="bar-li"><button class="bar-li-btn">Predict</button></li>
-        <li v-if="!log" class="bar-li-last"><button class="bar-li-btn" v-on:click="signaction">Register</button></li>
+        <li v-if="!log" class="bar-li-last"><button class="bar-li-btn">Register</button></li>
         <li class="bar-li-last"><button class="bar-li-btn" v-on:click="logaction">{{logactiondesc()}}</button></li>
         <li v-if="!log" class="bar-li-last"><input class="bar-li-btn" type="password" placeholder="Password" v-model="password"></li>
         <li v-if="!log" class="bar-li-last"><input class="bar-li-btn" type="text" placeholder="Username" v-model="username"></li>
@@ -18,7 +18,8 @@
 </template>
 
 <script>
-const { BACKEND } = require("./config/index.js");
+
+const BACKEND = 'https://209.97.191.228:3000/';
 
 export default {
   name: "app",
