@@ -2,8 +2,11 @@ import Vue from 'vue'
 import App from './App.vue'
 import Regist from './components/regist.vue'
 import Error from './components/error.vue'
+import axios from 'axios';
 
 import Datepicker from 'vuejs-datepicker';
+
+Vue.use(axios);
 
 Vue.component('error', Error);
 Vue.component('regist',Regist);
