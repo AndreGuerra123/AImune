@@ -1,5 +1,4 @@
 <template>
-
   <div id="app">
     <img src="./assets/imgs/alcyomics-logo.png" alt="Alcyomics Logo" class="logo">
     <ul class="bar">
@@ -7,19 +6,24 @@
         <li class="bar-li"><button class="bar-li-btn">Classify</button></li>
         <li class="bar-li"><button class="bar-li-btn">Model</button></li>
         <li class="bar-li"><button class="bar-li-btn">Predict</button></li>
-        <li v-if="!log" class="bar-li-last"><button class="bar-li-btn">Register</button></li>
+        <li v-if="!log" class="bar-li-last"><button id="show-modal" @click="regist" class="bar-li-btn">Register</button></li>
         <li class="bar-li-last"><button class="bar-li-btn" v-on:click="logaction">{{logactiondesc()}}</button></li>
         <li v-if="!log" class="bar-li-last"><input class="bar-li-btn" type="password" placeholder="Password" v-model="password"></li>
         <li v-if="!log" class="bar-li-last"><input class="bar-li-btn" type="text" placeholder="Username" v-model="username"></li>
-        <li v-if="log" class="bar-li-last-greet">{{greeting()}}</li>
-        <li v-if="error" class="bar-li-last-error">{{error}}</li>
+        <li v-if="log" class="bar-li-last-greet">{{greeting}}</li>
+        <error :show="error" @close="clear()"></error>
     </ul>
+    <regist :show="showRegister" @close="regist()"></regist>
   </div>
 </template>
 
 <script>
-
-const BACKEND = 'https://209.97.191.228:3000/';
+import axios from "axios";
+import moment from "moment";
+const ai = axios.create({
+  baseURL: "https://209.97.191.228:3000/",
+  timeout: 2000
+});
 
 export default {
   name: "app",
@@ -30,49 +34,64 @@ export default {
       username: "",
       password: "",
       greeting: "",
-      token: ""
+      token: "",
+      showRegister: false
     };
   },
   methods: {
-    logactiondesc: function() {
+    logactiondesc() {
       if (!this.log) {
         return "Login";
       } else {
         return "Logout";
       }
     },
-    logaction: function() {
+    login() {
+      ai
+        .post("signin", {
+          username: this.username,
+          password: this.password
+        })
+        .then(
+          response => {
+            this.token = response.data.token;
+            this.greet();
+            this.log = true;
+            this.error = "";
+          }
+        )
+        .catch(error => {
+
+          if(error.response.data.details[0].message){
+            this.error = error.response.data.details[0].message;
+          } else {
+            this.error = error.toString;
+          }
+
+          this.logout();
+        });
+    },
+
+    clear() {
+      this.error = "";
+    },
+
+    logout() {
+      this.username = "";
+      this.password = "";
+      this.log = false;
+      this.token = "";
+    },
+
+    logaction() {
       if (!this.log) {
         this.login();
       } else {
         this.logout();
       }
     },
-    login: function() {
-      axios
-        .post(BACKEND + "signin", {
-          username,
-          password
-        })
-        .then(function(res) {
-          token;
-          greet();
-          log = true;
-          error = "";
-        })
-        .catch(function(error) {
-          error = error.toString();
-          logout();
-        });
-    },
 
-    logout: function() {
-      username = "";
-      password = "";
-      log = false;
-      token = "";
-    },
-    greet: function() {
+    greet() {
       var morning = 7;
       var afternoon = 12;
       var evening = 18;
@@ -92,7 +111,11 @@ export default {
         g = "evening";
       }
 
-      greeting = "Good " + g + ", " + this.username + ".";
+      this.greeting = " Good " + g + ", " + this.username + ". ";
+    },
+
+    regist() {
+      this.showRegister = !this.showRegister;
     }
   }
 };
@@ -100,8 +123,63 @@ export default {
 
 <style>
 @font-face {
-  font-family: brandon_grotesque;
+  font-family: "Brandon_thin";
   src: url("./assets/fonts/Brandon Grotesque/Brandon_thin.otf")
+    format("opentype");
+}
+@font-face {
+  font-family: "Brandon_thin_italic";
+  src: url("./assets/fonts/Brandon Grotesque/Brandon_thin_it.otf")
+    format("opentype");
+}
+@font-face {
+  font-family: "Brandon_normal";
+  src: url("./assets/fonts/Brandon Grotesque/Brandon_reg.otf")
+    format("opentype");
+}
+@font-face {
+  font-family: "Brandon_normal_italic";
+  src: url("./assets/fonts/Brandon Grotesque/Brandon_reg_it.otf")
+    format("opentype");
+}
+@font-face {
+  font-family: "Brandon_lighter";
+  src: url("./assets/fonts/Brandon Grotesque/Brandon_light.otf")
+    format("opentype");
+}
+@font-face {
+  font-family: "Brandon_lighter_italic";
+  src: url("./assets/fonts/Brandon Grotesque/Brandon_light_it.otf")
+    format("opentype");
+}
+@font-face {
+  font-family: "Brandon_median";
+  src: url("./assets/fonts/Brandon Grotesque/Brandon_med.otf")
+    format("opentype");
+}
+@font-face {
+  font-family: "Brandon_median_italic";
+  src: url("./assets/fonts/Brandon Grotesque/Brandon_med_it.otf")
+    format("opentype");
+}
+@font-face {
+  font-family: "Brandon_bold";
+  src: url("./assets/fonts/Brandon Grotesque/Brandon_bld.otf")
+    format("opentype");
+}
+@font-face {
+  font-family: "Brandon_bold_italic";
+  src: url("./assets/fonts/Brandon Grotesque/Brandon_bld_it.otf")
+    format("opentype");
+}
+@font-face {
+  font-family: "Brandon_bolder";
+  src: url("./assets/fonts/Brandon Grotesque/Brandon_blk.otf")
+    format("opentype");
+}
+@font-face {
+  font-family: "Brandon_bolder_italic";
+  src: url("./assets/fonts/Brandon Grotesque/Brandon_blk_it.otf")
     format("opentype");
 }
 
@@ -134,7 +212,7 @@ export default {
   display: block;
   color: white;
   border-color: transparent;
-  font-family: brandon_grotesque;
+  font-family: Brandon_lighter;
   text-align: center;
   text-decoration: uppercase;
   background-color: #4cb6c8;
@@ -142,7 +220,7 @@ export default {
 .bar-li-last-greet {
   float: right;
   color: white;
-  font-family: brandon_grotesque;
+  font-family: Brandon_lighter;
   text-align: center;
   background-color: #4cb6c8;
 }
@@ -150,67 +228,12 @@ export default {
 .bar-li-last-error {
   float: rigth;
   color: red;
-  font-family: brandon_grotesque;
+  font-family: Brandon_lighter;
   text-align: center;
   background-color: #4cb6c8;
 }
 
 .bar-li-btn:hover {
   background-color: #ec70a8;
-}
-
-.modal-mask {
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: table;
-  transition: opacity 0.3s ease;
-}
-
-.modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.modal-container {
-  width: 300px;
-  margin: 0px auto;
-  padding: 20px 30px;
-  background-color: #fff;
-  border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  transition: all 0.3s ease;
-  font-family: Helvetica, Arial, sans-serif;
-}
-
-.modal-header h3 {
-  margin-top: 0;
-  color: #42b983;
-}
-
-.modal-body {
-  margin: 20px 0;
-}
-
-.modal-default-button {
-  float: right;
-}
-
-.modal-enter {
-  opacity: 0;
-}
-
-.modal-leave-active {
-  opacity: 0;
-}
-
-.modal-enter .modal-container,
-.modal-leave-active .modal-container {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
 }
 </style>
