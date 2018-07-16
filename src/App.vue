@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import axios from "axios";
-import moment from "moment";
+import axios from 'axios';
+
 const ai = axios.create({
   baseURL: "https://209.97.191.228:3000/",
   timeout: 2000
@@ -95,23 +95,17 @@ export default {
       var morning = 7;
       var afternoon = 12;
       var evening = 18;
-      var g = "";
-
-      var currentHour = parseFloat(
-        moment()
-          .format("HH")
-          .toString()
-      );
+      var currentHour = new Date().getHours();
 
       if (currentHour >= morning && currentHour <= afternoon) {
-        g = "morning";
+        var g = "morning";
       } else if (currentHour >= afternoon && currentHour <= evening) {
-        g = "afternoon";
+        var g = "afternoon";
       } else {
-        g = "evening";
+        var g = "evening";
       }
 
-      this.greeting = " Good " + g + ", " + this.username + ". ";
+      this.greeting = "  Good " + g + ", " + this.username + ".  ";
     },
 
     regist() {

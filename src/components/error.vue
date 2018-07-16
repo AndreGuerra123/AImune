@@ -59,7 +59,7 @@ export default {
 
 .error-container {
   width: 500px;
-  margin: 50% auto 0;
+  margin: 330px auto 0;
   padding: 20px 20px;
   background-color: #fff;
   border-radius: 2px;
@@ -98,7 +98,7 @@ export default {
 .error-footer{
 width: 100px;
 position:absolute;
-bottom:400px;
+bottom:350px;
 left: 50%;
 margin-left: -50px
 }

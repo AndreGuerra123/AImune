@@ -1,11 +1,9 @@
 <script>
-import axios from "axios";
+import axios from 'axios';
 let ai = axios.create({
   baseURL: "https://209.97.191.228:3000/",
   timeout: 2000
 });
-
-import Error from "./error.vue";
 
 export default {
   template: "#regist-template",
