@@ -2,23 +2,24 @@
   <div id="app">
     <img src="./assets/imgs/alcyomics-logo.png" alt="Alcyomics Logo" class="logo">
     <ul class="bar">
-        <li class="bar-li"><button class="bar-li-btn">Load</button></li>
+        <li class="bar-li"><button class="bar-li-btn" @click="showLoader=true">Load</button></li>
         <li class="bar-li"><button class="bar-li-btn">Classify</button></li>
         <li class="bar-li"><button class="bar-li-btn">Model</button></li>
         <li class="bar-li"><button class="bar-li-btn">Predict</button></li>
-        <li v-if="!log" class="bar-li-last"><button id="show-modal" @click="regist" class="bar-li-btn">Register</button></li>
+        <li v-if="!token" class="bar-li-last"><button id="show-modal" @click="initiateRegistry" class="bar-li-btn">Register</button></li>
         <li class="bar-li-last"><button class="bar-li-btn" v-on:click="logaction">{{logactiondesc()}}</button></li>
-        <li v-if="!log" class="bar-li-last"><input class="bar-li-btn" type="password" placeholder="Password" v-model="password"></li>
-        <li v-if="!log" class="bar-li-last"><input class="bar-li-btn" type="text" placeholder="Username" v-model="username"></li>
-        <li v-if="log" class="bar-li-last-greet">{{greeting}}</li>
-        <error :show="error" @close="clear()"></error>
+        <li v-if="!token" class="bar-li-last"><input class="bar-li-btn" type="password" placeholder="Password" v-model="password"></li>
+        <li v-if="!token" class="bar-li-last"><input class="bar-li-btn" type="text" placeholder="Username" v-model="username"></li>
+        <li v-if="token" class="bar-li-last-greet">{{greeting}}</li>
     </ul>
-    <regist :show="showRegister" @close="regist()"></regist>
+    <error :show="error" @close="clearError"></error>
+    <load :show="showLoader" @close="showLoader=false"></load>
+    <regist :show="showRegister" @close="onRegist"></regist>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 const ai = axios.create({
   baseURL: "https://209.97.191.228:3000/",
@@ -29,18 +30,18 @@ export default {
   name: "app",
   data: function() {
     return {
-      log: false,
       error: "",
       username: "",
       password: "",
       greeting: "",
       token: "",
-      showRegister: false
+      showRegister: false,
+      showLoader: false
     };
   },
   methods: {
     logactiondesc() {
-      if (!this.log) {
+      if (!this.token) {
         return "Login";
       } else {
         return "Logout";
@@ -52,39 +53,39 @@ export default {
           username: this.username,
           password: this.password
         })
-        .then(
-          response => {
-            this.token = response.data.token;
-            this.greet();
-            this.log = true;
-            this.error = "";
-          }
-        )
-        .catch(error => {
-
-          if(error.response.data.details[0].message){
+        .then(response => {
+          this.token = response.data.token;
+          this.greet();
+        }).catch(error => {
+          try {
             this.error = error.response.data.details[0].message;
-          } else {
-            this.error = error.toString;
+          } finally {
+            if (!this.error) {
+              try{
+              console.log(error)
+              console.log(error.response)
+              }finally{
+              this.error = error.toString();
+              }
+            }
+            this.logout();
           }
-
-          this.logout();
         });
     },
 
-    clear() {
-      this.error = "";
+    clearError() {
+      this.error = '';
     },
 
     logout() {
-      this.username = "";
-      this.password = "";
-      this.log = false;
-      this.token = "";
+      this.token = '';
+      this.username = '';
+      this.password = '';
+      this.greeting = '';
     },
 
     logaction() {
-      if (!this.log) {
+      if (!this.token) {
         this.login();
       } else {
         this.logout();
@@ -107,9 +108,16 @@ export default {
 
       this.greeting = "  Good " + g + ", " + this.username + ".  ";
     },
-
-    regist() {
-      this.showRegister = !this.showRegister;
+    initiateRegistry() {
+      this.showRegister = true;
+    },
+    onRegist(value) {
+      this.showRegister = false;
+      this.token = value.token;
+      this.username = value.username;
+      if (this.token) {
+        this.greet();
+      }
     }
   }
 };

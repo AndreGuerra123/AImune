@@ -1,5 +1,5 @@
 <script>
-import axios from 'axios';
+import axios from "axios";
 let ai = axios.create({
   baseURL: "https://209.97.191.228:3000/",
   timeout: 2000
@@ -23,18 +23,24 @@ export default {
       password: "",
       password_confirm: "",
       auth_token: "",
-      error : ""
+      error: "",
+      yes: true,
+      token: ""
     };
   },
   methods: {
-    close: function() {
-      this.$emit("close");
+    type() {
+      return true;
+    },
+    close: function(token, username) {
+      this.$emit("close", { token, username });
     },
     clear: function() {
       this.error = "";
     },
     registUser: function() {
-        ai.post("signup",{
+      ai
+        .post("signup", {
           firstname: this.firstname,
           lastname: this.lastname,
           username: this.username,
@@ -48,25 +54,34 @@ export default {
           password: this.password,
           password_confirm: this.password_confirm,
           auth_token: this.auth_token
-        }).then(res => {
-          this.token = res.data.token;
-          this.greet();
-          this.log = true;
-          this.error = "";
-        }).catch(error => {
-
-          if(error.response.data.details[0].message){
-            this.error = error.response.data.details[0].message;
-          } else {
-            this.error = error.toString();
-          }
         })
+        .then(res => {
+          this.token = res.data.token;
+          this.close(this.token, this.username);
+        })
+        .catch(error => {
+          try {
+            this.error = error.response.data.details[0].message;
+          }catch(ignore){
+
+          }
+          if (!this.error) {
+            try{
+              this.error = error.response.data.error;
+            }catch(ignore){
+
+            }
+          }
+          if(!this.error){
+              this.error = error.toString();
+          }
+        });
     }
   },
   mounted: function() {
     document.addEventListener("keydown", e => {
       if (this.show && e.keyCode == 27) {
-        this.close();
+        this.close("", "");
       }
     });
   }
@@ -75,7 +90,7 @@ export default {
 
 <template>
 <transition name="regist">
-        <div class="regist-mask" @click="close" v-show="show">
+        <div class="regist-mask" @click="close(token,username)" v-show="show">
             <div class="regist-container" @click.stop>
                 <div class="regist-header">
                     <img src="../assets/imgs/alcyomics-icon.png" alt="Alcyomics Icon" class="icon">
@@ -119,12 +134,13 @@ export default {
                         <input v-model="country" class="form-control">
                     </label>
                     </li>
+
                     </ul>
                     <ul class="entries">
                     <li class='entry1'><label class="form-label">
                          <label class="form-label">
                         Birthday:
-                        <datepicker v-model="birthdate" class = "datepickform-control"></datepicker>
+                        <datepicker v-model="birthdate" class = "datepickform-control" :typeable="yes"></datepicker>
                     </label>
                     </label>
                     </li>
@@ -148,7 +164,6 @@ export default {
                     </label>
                     </li>
                     </ul>
-
                     <ul class="entries">
                     <li class='entry1'><label class="form-label">
                         Username:
@@ -158,11 +173,11 @@ export default {
                     <li class="entry2">
                         <label class="form-label">
                         Password:
-                        <input v-model="password" class="form-control">
+                        <input  type="password" v-model="password" class="form-control">
                     </label>
                     <li class="entry2">
                         <label class="form-label">
-                        <input v-model="password_confirm" class="form-control">
+                        <input type="password" v-model="password_confirm" class="form-control">
                     </label>
                     </li>
                     </ul>
@@ -235,19 +250,18 @@ export default {
   margin: 15px 2px;
 }
 
-.regist-footer{
-width: 100px;
-position:absolute;
-bottom:200px;
-left: 50%;
-margin-left: -50px
+.regist-footer {
+  width: 100px;
+  position: absolute;
+  bottom: 200px;
+  left: 50%;
+  margin-left: -50px;
 }
 
 .form-label {
   display: block;
   font-family: Brandon_lighter;
 }
-
 
 .form-control {
   display: block;
@@ -264,14 +278,13 @@ margin-left: -50px
  * You can easily play with the modal transition by editing
  * these styles.
  */
- .datepickform-control {
-     display: block;
+.datepickform-control {
+  display: block;
 
-    padding: 0;
-    line-height: 1.7;
-      border: 1px solid #ddd;
-
- }
+  padding: 0;
+  line-height: 1.7;
+  border: 1px solid #ddd;
+}
 
 .regist-enter {
   opacity: 0;
@@ -290,20 +303,17 @@ margin-left: -50px
 .entries {
   list-style-type: none;
   padding: 3px;
-  margin: 3%
+  margin: 3%;
 }
 
 .entry1 {
   float: left;
   margin-left: 5%;
   margin-right: 0;
-
 }
 .entry2 {
   float: right;
   margin-left: 0;
   margin-right: 5%;
-
-
 }
 </style>
