@@ -1,9 +1,9 @@
 <script>
-import axios from "axios";
-let ai = axios.create({
-  baseURL: "https://209.97.191.228:3000/",
-  timeout: 2000
-});
+import axios from 'axios';
+const ax = axios.create({
+          baseURL: "https://209.97.191.228:3000/",
+          timeout: 2000});
+
 
 export default {
   template: "#regist-template",
@@ -39,7 +39,7 @@ export default {
       this.error = "";
     },
     registUser: function() {
-      ai
+     ax
         .post("signup", {
           firstname: this.firstname,
           lastname: this.lastname,

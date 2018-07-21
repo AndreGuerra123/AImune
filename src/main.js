@@ -2,24 +2,29 @@ import Vue from 'vue'
 import App from './App.vue'
 
 
-import axios from 'axios';
-Vue.use(axios);
+import KerasModelEditor from './assets/dependencies/keras-model-editor.js';
+Vue.use(KerasModelEditor);
 
 import V2D from 'vue2-dropzone'
-import 'vue2-dropzone/dist/vue2Dropzone.min.css'
+import 'vue2-dropzone/dist/vue2Dropzone.min.css';
 
 import Datepicker from 'vuejs-datepicker';
 
-Vue.component('datepicker',Datepicker);
 Vue.component('vue-dropzone',V2D);
+Vue.component('datepicker',Datepicker);
 
 import Regist from './components/regist.vue'
 import Error from './components/error.vue'
 import Loader from './components/load.vue'
+import Designer from './components/design.vue'
+
+import UploadArch from './components/uploadarch.vue';
 
 Vue.component('load', Loader);
 Vue.component('error', Error);
 Vue.component('regist',Regist);
+Vue.component('design',Designer);
+Vue.component('uploadarch', UploadArch);
 
 
 

@@ -3,9 +3,9 @@
     <img src="./assets/imgs/alcyomics-logo.png" alt="Alcyomics Logo" class="logo">
     <ul class="bar">
         <li class="bar-li"><button class="bar-li-btn" @click="showLoader=true">Load</button></li>
-        <li class="bar-li"><button class="bar-li-btn">Classify</button></li>
-        <li class="bar-li"><button class="bar-li-btn">Model</button></li>
-        <li class="bar-li"><button class="bar-li-btn">Predict</button></li>
+        <li class="bar-li"><button class="bar-li-btn" @click="showDesigner=true">Design</button></li>
+        <li class="bar-li"><button class="bar-li-btn" @click="showTrainer=true">Train</button></li>
+        <li class="bar-li"><button class="bar-li-btn" @click="showPredictor=true">Predict</button></li>
         <li v-if="!token" class="bar-li-last"><button id="show-modal" @click="initiateRegistry" class="bar-li-btn">Register</button></li>
         <li class="bar-li-last"><button class="bar-li-btn" v-on:click="logaction">{{logactiondesc()}}</button></li>
         <li v-if="!token" class="bar-li-last"><input class="bar-li-btn" type="password" placeholder="Password" v-model="password"></li>
@@ -13,18 +13,18 @@
         <li v-if="token" class="bar-li-last-greet">{{greeting}}</li>
     </ul>
     <error :show="error" @close="clearError"></error>
-    <load :show="showLoader" @close="showLoader=false"></load>
     <regist :show="showRegister" @close="onRegist"></regist>
+    <load :show="showLoader" :token="token" :username="username" @close="showLoader=false"></load>
+    <design :show="showDesigner" :token="token" :username="username" @close="showDesigner=false"></design>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
+const ax = axios.create({
+          baseURL: "https://209.97.191.228:3000/",
+          timeout: 2000});
 
-const ai = axios.create({
-  baseURL: "https://209.97.191.228:3000/",
-  timeout: 2000
-});
 
 export default {
   name: "app",
@@ -36,7 +36,10 @@ export default {
       greeting: "",
       token: "",
       showRegister: false,
-      showLoader: false
+      showLoader: false,
+      showDesigner: false,
+      showTrainer: false,
+      showPredictor: false
     };
   },
   methods: {
@@ -48,7 +51,7 @@ export default {
       }
     },
     login() {
-      ai
+      ax
         .post("signin", {
           username: this.username,
           password: this.password

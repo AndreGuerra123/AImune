@@ -1,22 +1,20 @@
 <script>
 export default {
-  template: "#load-template",
+  template: "#uploadarch-template",
   props: ["show","token","username"],
   data: function() {
     return {
-      patient: '',
-      condition: '',
-      compound: '',
-      classi: '',
+      name:'',
+      shared:'',
       dropzoneOptions: {
-        url: "https://209.97.191.228:3000/load",
+        url: "https://209.97.191.228:3000/design/save",
         thumbnailWidth: 380,
         maxFilesize: 3,
         maxFiles: 1,
         addRemoveLinks: true,
-        acceptedFiles: "image/*",
+        acceptedFiles: '.json',
         headers: { "token": this.token },
-        paramName:"image",
+        paramName:"file",
         autoProcessQueue: false
       }
     };
@@ -27,7 +25,7 @@ export default {
     },
     reset: function(){
       try{
-        this.$refs.loaddropzone.removeAllFiles(true);
+        this.$refs.uploadarchdropzone.removeAllFiles(true);
       }finally{
              this.patient = '';
       this.condition = '';
@@ -37,14 +35,13 @@ export default {
 
     },
     sending: function(file, xhr, formData){
-      formData.append('user',this.username);
-      formData.append('patient', this.patient);
-      formData.append('condition',this.condition);
-      formData.append('compound',this.compound);
-      formData.append('classi',this.classi);
+      formData.append('name',this.name);
+      formData.append('owner', this.username);
+      formData.append('date',new Date());
+      formData.append('shared',this.shared);
     },
     submit: function(){
-      this.$refs.loaddropzone.processQueue();
+      this.$refs.uploadarchdropzone.processQueue();
     },
     cancel: function(){
       this.reset();
@@ -64,14 +61,14 @@ export default {
 };
 </script>
 
-<template name="load">
+<template name="uploadarch">
 <transition>
-        <div class="load-mask" @click="close" v-show="show">
-            <div class="load-container" @click.stop>
-                <div class="load-header">
+        <div class="uploadarch-mask" @click="close" v-show="show">
+            <div class="uploadarch-container" @click.stop>
+                <div class="uploadarch-header">
                     <img src="../assets/imgs/alcyomics-icon.png" alt="Alcyomics Icon" class="icon">
                 </div>
-                <vue-dropzone ref="loaddropzone" id="customdropzone" :options="dropzoneOptions" v-on:vdropzone-sending="sending" v-on:vdropzone-success="close"></vue-dropzone>
+                <vue-dropzone ref="uploadarchdropzone" id="uploadarchcustomdropzone" :options="dropzoneOptions" v-on:vdropzone-sending="sending" v-on:vdropzone-success="close"></vue-dropzone>
                 <div>
                    <form class="form">
 			          <ul class="ul-list">
@@ -101,10 +98,10 @@ export default {
 		            </form>
                 </div>
             </div>
-            <div class="load-footer" @click.stop>
-                  <button class="load-default-button" @click="reset()">Reset</button>
-                  <button class="load-default-button" @click="cancel()">Cancel</button>
-                  <button class="load-default-button" @click="submit()">Submit</button>
+            <div class="uploadarch-footer" @click.stop>
+                  <button class="uploadarch-default-button" @click="reset()">Reset</button>
+                  <button class="uploadarch-default-button" @click="cancel()">Cancel</button>
+                  <button class="uploadarch-default-button" @click="submit()">Submit</button>
             </div>
         </div>
 </transition>
@@ -188,7 +185,7 @@ export default {
   font-size: 18px;
 }
 
-.load-mask {
+.uploadarch-mask {
   position: fixed;
   z-index: 9998;
   top: 0;
@@ -199,7 +196,7 @@ export default {
   transition: opacity 0.3s ease;
 }
 
-.load-container {
+.uploadarch-container {
   width: 500px;
   height: 600px;
   margin: 200px auto 0;
@@ -210,7 +207,7 @@ export default {
   transition: all 0.3s ease;
   font-family: Brandon_normal;
 }
-.load-default-button {
+.uploadarch-default-button {
   display: inline-block;
   color: white;
   border-color: transparent;
@@ -221,28 +218,28 @@ export default {
   background-color: #4cb6c8;
   margin:1%
 }
-.load-default-button:hover {
+.uploadarch-default-button:hover {
   background-color: #ec70a8;
 }
 
-.load-header .icon {
+.uploadarch-header .icon {
   display: block;
   margin-left: auto;
   margin-right: auto;
   padding: 20px;
 }
 
-.load-body {
+.uploadarch-body {
   margin: 15px 2px;
 }
 
-.load-footer {
+.uploadarch-footer {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.form-label-load {
+.form-label-uploadarch {
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -252,7 +249,7 @@ export default {
   font-size: 22px;
   color: black;
 }
-.form-load-desc {
+.form-uploadarch-desc {
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -263,21 +260,21 @@ export default {
   color: red;
 }
 
-.load-enter {
+.uploadarch-enter {
   opacity: 0;
 }
 
-.load-leave-active {
+.uploadarch-leave-active {
   opacity: 0;
 }
 
-.load-enter .load-container,
-.load-leave-active .load-container {
+.uploadarch-enter .uploadarch-container,
+.uploadarch-leave-active .uploadarch-container {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }
 
-#customdropzone {
+#uploadarchcustomdropzone {
   height: 280px;
 }
 </style>
