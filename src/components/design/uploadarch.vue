@@ -1,54 +1,69 @@
 <script>
 export default {
   template: "#uploadarch-template",
-  props: ["show","token","username"],
+  props: ["show", "token", "username", "list"],
   data: function() {
     return {
-      name:'',
-      shared:'',
+      name: null,
+      shared: null,
+      error: null,
       dropzoneOptions: {
-        url: "https://209.97.191.228:3000/design/save",
+        url: "https://209.97.191.228:3000/design/savenew",
         thumbnailWidth: 380,
         maxFilesize: 3,
         maxFiles: 1,
         addRemoveLinks: true,
-        acceptedFiles: '.json',
-        headers: { "token": this.token },
-        paramName:"file",
+        acceptedFiles: ".json",
+        headers: { token: this.token },
+        paramName: "kerasfile",
         autoProcessQueue: false
       }
     };
   },
   methods: {
-    close: function() {
-      this.$emit("close");
+    close: function(event) {
+      this.$emit("close",this.name);
     },
-    reset: function(){
-      try{
+    reset: function() {
+      try {
         this.$refs.uploadarchdropzone.removeAllFiles(true);
-      }finally{
-             this.patient = '';
-      this.condition = '';
-      this.compound = '';
-      this.classi = '';
+      } finally {
+        this.name = "";
+        this.shared = false;
       }
-
     },
-    sending: function(file, xhr, formData){
-      formData.append('name',this.name);
-      formData.append('owner', this.username);
-      formData.append('date',new Date());
-      formData.append('shared',this.shared);
+    sending: function(file, xhr, formData) {
+      formData.append("name", this.name);
+      formData.append("user", this.username);
+      formData.append("date", new Date());
+      formData.append("shared", this.shared);
     },
-    submit: function(){
-      this.$refs.uploadarchdropzone.processQueue();
+    submit: function() {
+      try {
+        this.validation();
+        this.$refs.uploadarchdropzone.processQueue();
+      } catch (error) {
+        this.error = error;
+      }
     },
-    cancel: function(){
+    validation: function() {
+      if (!this.name) {
+        throw new Error("User must select a name for the model architecture.");
+      } else if (!this.shared) {
+        throw new Error(
+          "User must decide the publicity of the model architecture."
+        );
+      } else if (this.repeated()) {
+        throw new Error("Model architecture name is already taken.");
+      }
+    },
+    repeated: function() {
+      var badnames = this.list.map(a => a.name);
+      return badnames.includes(this.name);
+    },
+    cancel: function() {
       this.reset();
       this.close();
-    },
-    sucess: function (){
-
     }
   },
   mounted: function() {
@@ -66,34 +81,23 @@ export default {
         <div class="uploadarch-mask" @click="close" v-show="show">
             <div class="uploadarch-container" @click.stop>
                 <div class="uploadarch-header">
-                    <img src="../assets/imgs/alcyomics-icon.png" alt="Alcyomics Icon" class="icon">
+                    <img src="../../assets/imgs/alcyomics-icon.png" alt="Alcyomics Icon" class="icon">
                 </div>
                 <vue-dropzone ref="uploadarchdropzone" id="uploadarchcustomdropzone" :options="dropzoneOptions" v-on:vdropzone-sending="sending" v-on:vdropzone-success="close"></vue-dropzone>
                 <div>
                    <form class="form">
 			          <ul class="ul-list">
       					<li id="li_1" class="li-ele">
-		              <label class="description" for="element_1">Patient Reference: </label>
-			            <div data-tip="Patient Reference ID: Identifies the patient from which the sample was collected.">
-                  <input id="element_1" name="element_1" class="field" type="text" maxlength="255" v-model="patient"></div>
+		              <label class="description" for="element_1">Architecture Name*: </label>
+			            <div data-tip="Architecture Name: Identifies the name of the architecture to wich the file corresponds.">
+                  <input id="element_1" name="element_1" class="field" type="text" maxlength="255" v-model="name"></div>
 		            </li>
             		<li id="li_2" class="li-ele">
-		              <label class="description" for="element_2">Tested Conditions: </label>
-		              <div data-tip="Test Condition: identifies with conditions where performed in the design of experiments.">
-			              <input id="element_2" name="element_2" class="field" type="text" maxlength="255" v-model="condition">
+		              <label class="description" for="element_2">Public: </label>
+		              <div data-tip="Public: identifies the availability of this model for other users.">
+			              <input id="element_2" name="element_2" class="field" type="checkbox" maxlength="255" v-model="shared">
                   </div>
 	            	</li>
-                <li id="li_3" class="li-ele">
-		              <label class="description" for="element_3">Tested Compound: </label>
-		              <div data-tip="Tested Compound: identifies wich compounds were used in oder to test their immunogeneicity.">
-			              <input id="element_3" name="element_3" class="field" type="text" maxlength="255" v-model="compound"> </div>
-		            </li>
-                <li id="li_4" class="li-ele">
-		              <label class="description" for="element_4">*Classification: </label>
-		              <div data-tip="*Classification: this value corresponds to the histopathological analysis of this image (0-4). This field is required.">
-		                <input id="element_4" name="element_4" class="field" type="number" maxlength="255" v-model="classi">
-		              </div>
-		            </li>
 			          </ul>
 		            </form>
                 </div>
@@ -103,12 +107,12 @@ export default {
                   <button class="uploadarch-default-button" @click="cancel()">Cancel</button>
                   <button class="uploadarch-default-button" @click="submit()">Submit</button>
             </div>
+            <error :show="error" @close="error=null"></error>
         </div>
 </transition>
 </template>
 
 <style>
-
 * {
   box-sizing: border-box;
 }
@@ -216,7 +220,7 @@ export default {
   font-size: 20px;
   text-decoration: uppercase;
   background-color: #4cb6c8;
-  margin:1%
+  margin: 1%;
 }
 .uploadarch-default-button:hover {
   background-color: #ec70a8;

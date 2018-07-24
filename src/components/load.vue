@@ -1,13 +1,14 @@
 <script>
 export default {
   template: "#load-template",
-  props: ["show","token","username"],
+  props: ["show", "token", "username"],
   data: function() {
     return {
-      patient: '',
-      condition: '',
-      compound: '',
-      classi: '',
+      error: null,
+      patient: "",
+      condition: "",
+      compound: "",
+      classi: "",
       dropzoneOptions: {
         url: "https://209.97.191.228:3000/load",
         thumbnailWidth: 380,
@@ -15,44 +16,51 @@ export default {
         maxFiles: 1,
         addRemoveLinks: true,
         acceptedFiles: "image/*",
-        headers: { "token": this.token },
-        paramName:"image",
+        headers: { token: this.token },
+        paramName: "image",
         autoProcessQueue: false
       }
     };
   },
   methods: {
+    validation: function() {
+      if (!this.classi || this.classi < 0 || this.classi > 5) {
+        throw new Error("Please select a valid classification value.");
+      }
+    },
     close: function() {
       this.$emit("close");
     },
-    reset: function(){
-      try{
+    reset: function() {
+      try {
         this.$refs.loaddropzone.removeAllFiles(true);
-      }finally{
-             this.patient = '';
-      this.condition = '';
-      this.compound = '';
-      this.classi = '';
+      } finally {
+        this.patient = "";
+        this.condition = "";
+        this.compound = "";
+        this.classi = "";
       }
-
     },
-    sending: function(file, xhr, formData){
-      formData.append('user',this.username);
-      formData.append('patient', this.patient);
-      formData.append('condition',this.condition);
-      formData.append('compound',this.compound);
-      formData.append('classi',this.classi);
+    sending: function(file, xhr, formData) {
+      formData.append("user", this.username);
+      formData.append("patient", this.patient);
+      formData.append("condition", this.condition);
+      formData.append("compound", this.compound);
+      formData.append("classi", this.classi);
     },
-    submit: function(){
-      this.$refs.loaddropzone.processQueue();
+    submit: function() {
+      try {
+        this.validation();
+        this.$refs.loaddropzone.processQueue();
+      } catch (error) {
+        this.error = error.toString();
+      }
     },
-    cancel: function(){
+    cancel: function() {
       this.reset();
       this.close();
     },
-    sucess: function (){
-
-    }
+    sucess: function() {}
   },
   mounted: function() {
     document.addEventListener("keydown", e => {
@@ -100,6 +108,7 @@ export default {
 			          </ul>
 		            </form>
                 </div>
+                <error :show="error" @close="error=null"></error>
             </div>
             <div class="load-footer" @click.stop>
                   <button class="load-default-button" @click="reset()">Reset</button>
@@ -111,7 +120,6 @@ export default {
 </template>
 
 <style>
-
 * {
   box-sizing: border-box;
 }
@@ -219,7 +227,7 @@ export default {
   font-size: 20px;
   text-decoration: uppercase;
   background-color: #4cb6c8;
-  margin:1%
+  margin: 1%;
 }
 .load-default-button:hover {
   background-color: #ec70a8;

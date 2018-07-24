@@ -1,8 +1,9 @@
 <script>
-import axios from 'axios';
+import axios from "axios";
 const ax = axios.create({
-          baseURL: "https://209.97.191.228:3000/",
-          timeout: 2000});
+  baseURL: "https://209.97.191.228:3000/",
+  timeout: 2000
+});
 
 export default {
   template: "#design-template",
@@ -13,9 +14,9 @@ export default {
       showSaver: false,
       showDeleter: false,
       architecture: {
-        id: null,
+        _id: null,
         name: null,
-        owner: null,
+        user: null,
         date: null,
         shared: null,
         file: null
@@ -32,20 +33,18 @@ export default {
     };
   },
   methods: {
-    close: function() {
+    close: function(value) {
       this.$emit("close");
     },
     updateList: async function() {
-      //API call to :3000/design/init
-      try {
-        this.list = await ax.get(
-          "design/init",
-          { owner: this.username },
-          { header: { token: this.token } }
-        );
-      } catch (err) {
-        console.log(err.response);
-      }
+      await ax
+        .get("design/init", {
+          params: { user: this.username },
+          header: { token: this.token }
+        })
+        .then(res => {
+          this.list = res.data;
+        });
     },
     updateEditor: function() {
       let editor = new KerasModelEditor(
@@ -56,6 +55,29 @@ export default {
       if (this.architecture.file) {
         editor.show();
       }
+    },
+    refocus: async function(value) {
+      this.showUploader = false;
+      this.showSaver = false;
+      this.showDeleter = false;
+
+      await this.updateList();
+
+      if (value != null) {
+        var idx = this.list.findIndex(({ name }) => name === value);
+        if (idx != -1) {
+          this.architecture = this.list[idx];
+        } else {
+          this.setFirst();
+        }
+      } else {
+        this.setFirst();
+      }
+    },
+    setFirst: function() {
+      if (this.list && this.list[0]) {
+        this.architecture = this.list[0];
+      }
     }
   },
   watch: {
@@ -65,12 +87,11 @@ export default {
         this.updateEditor();
       },
       deep: true
-    }
-  },
-  beforeMount: async function() {
-    await this.updateList();
-    if (this.list) {
-      architecture = this.list[0];
+    },
+    show: {
+      handler: async function(newDesign, oldDesign) {
+        this.refocus(null);
+      }
     }
   },
   mounted: function() {
@@ -89,35 +110,34 @@ export default {
         <div class="design-mask" @click="close" v-show="show">
             <div class="design-container" @click.stop>
               <div class="design-header">
-                    <img src="../assets/imgs/alcyomics-icon.png" alt="Alcyomics Icon" class="icon">
+                    <img src="../../assets/imgs/alcyomics-icon.png" alt="Alcyomics Icon" class="icon">
               </div>
-              <uploadarch name="uploadarch" :token="token" :username="username" :show="showUploader" @close="showUploader=false"></uploadarch>
-              <!--<saveArchitecture name="saveArch" :show="showUploader" @close="showUploader=false"></saveArchitecture>-->
-              <!--<deleteArchitecture name="deleteArch" :show="showUploader" @close="showUploader=false"></deleteArchitecture>-->
+              <uploadarch name="uploadarch" :token="token" :username="username" :list="list" :show="showUploader" @close="refocus($event)"></uploadarch>
+              <savearch name="savearch" :token="token" :username="username" :show="showSaver" :architecture="architecture" :list="list" @close="refocus($event)"></savearch>
+              <deletearch name="deletearch" :token="token" :username="username" :show="showDeleter" @close="refocus($event)"></deletearch>
+
               <div id="keras-editor" ref="keras-editor" class="design-editor"></div>
               <div class="design-selector">
                   <ul class="design-entries">
                     <li class='design-entry-first'><label class="design-form-label">ID</label>
-                    <output class="design-form-control">{{architecture.id}}</output>
+                    <output class="design-form-control">{{architecture._id}}</output>
                     <li class='design-entry-first'><label class="design-form-label">Name</label>
                     <output class="design-form-control">{{architecture.name}}</output></li>
                     <li class='design-entry-first'><label class="design-form-label">Owner</label>
-                    <output class="design-form-control">{{architecture.owner}}</output></li>
+                    <output class="design-form-control">{{architecture.user}}</output></li>
                     <li class='design-entry-first'><label class="design-form-label">Date Created</label>
                     <output class="design-form-control">{{architecture.date}}</output></li>
-                    <li class='design-entry-second'><label class="design-form-label">Select architecture</label>
+                    <li class='design-entry-second'><label class="design-form-label">Select Architecture:</label>
                     <select class="design-form-control" v-model="architecture">
-
-                        <!-- <option v-for="arch in list" v-bind:value="arch">{{ arch.name }}</option> -->
+                         <option :value="option" v-for="option in list">{{ option.name }}</option>
                     </select>
                     </li>
                   </ul>
               </div>
               <div class="design-footer" @click.stop>
-                  <button class="design-default-button" @click="updateEditor">Reset</button>
-                  <button class="design-default-button" @click="showUploader=true">Upload</button>
-                  <button class="design-default-button" @click="showSaver=true">Save</button>
-                  <button class="design-default-button" @click="showDeleter=true">Delete</button>
+                  <button class="design-default-button" @click="showUploader=true" @close="showUploader = false">Upload</button>
+                  <button class="design-default-button" @click="showSaver=true" @close="showSaver = false">Save</button>
+                  <button class="design-default-button" @click="showDeleter=true" @close="showDeleter = false">Delete</button>
               </div>
             </div>
         </div>

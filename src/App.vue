@@ -2,10 +2,10 @@
   <div id="app">
     <img src="./assets/imgs/alcyomics-logo.png" alt="Alcyomics Logo" class="logo">
     <ul class="bar">
-        <li class="bar-li"><button class="bar-li-btn" @click="showLoader=true">Load</button></li>
-        <li class="bar-li"><button class="bar-li-btn" @click="showDesigner=true">Design</button></li>
-        <li class="bar-li"><button class="bar-li-btn" @click="showTrainer=true">Train</button></li>
-        <li class="bar-li"><button class="bar-li-btn" @click="showPredictor=true">Predict</button></li>
+        <li v-if="token" class="bar-li"><button class="bar-li-btn" @click="showLoader=true">Load</button></li>
+        <li v-if="token" class="bar-li"><button class="bar-li-btn" @click="showDesigner=true">Design</button></li>
+        <li v-if="token" class="bar-li"><button class="bar-li-btn" @click="showTrainer=true">Train</button></li>
+        <li v-if="token" class="bar-li"><button class="bar-li-btn" @click="showPredictor=true">Predict</button></li>
         <li v-if="!token" class="bar-li-last"><button id="show-modal" @click="initiateRegistry" class="bar-li-btn">Register</button></li>
         <li class="bar-li-last"><button class="bar-li-btn" v-on:click="logaction">{{logactiondesc()}}</button></li>
         <li v-if="!token" class="bar-li-last"><input class="bar-li-btn" type="password" placeholder="Password" v-model="password"></li>
@@ -52,7 +52,7 @@ export default {
     },
     login() {
       ax
-        .post("signin", {
+        .post("login", {
           username: this.username,
           password: this.password
         })

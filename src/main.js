@@ -16,15 +16,19 @@ Vue.component('datepicker',Datepicker);
 import Regist from './components/regist.vue'
 import Error from './components/error.vue'
 import Loader from './components/load.vue'
-import Designer from './components/design.vue'
+import Designer from './components/design/design.vue'
 
-import UploadArch from './components/uploadarch.vue';
+import UploadArch from './components/design/uploadarch.vue';
+import SaveArch from './components/design/savearch.vue';
+import DeleteArch from './components/design/deletearch.vue';
 
 Vue.component('load', Loader);
 Vue.component('error', Error);
 Vue.component('regist',Regist);
 Vue.component('design',Designer);
 Vue.component('uploadarch', UploadArch);
+Vue.component('savearch',SaveArch);
+Vue.component('deletearch',DeleteArch);
 
 
 
