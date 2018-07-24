@@ -45,7 +45,7 @@ export default {
           }
         )
         .catch(err => {
-          throw err;
+          throw new Error(err.message);
         });
     },
     validation: function() {
@@ -55,7 +55,15 @@ export default {
         );
       } else if (!this.name) {
         throw new Error("Please, confirm the architecture name to be saved.");
+      } else if (this.isDifferentOwnedModel()){
+        throw new Error("The model architecture name selected is already taken for this user.");
       }
+    },
+    isDifferentOwnedModel: function(){
+      return this.list
+      .filter(e=>{return (e.user==this.username)}) //Find archs of this username
+      .filter(e=>{return (e.name!=this.architecture.name)}) //This arch name is allowed for current saving
+      .some(e=>{return (e.name==this.name)})
     }
   },
   watch: {
@@ -92,19 +100,20 @@ export default {
                    <form class="form">
 			          <ul class="ul-list">
       					<li id="li_1" class="li-ele">
-		              <label class="description" for="element_1">Architecture Name*: </label>
+		              <label class="description" for="element_11">Architecture Name*: </label>
 			            <div data-tip="Architecture Name: Identifies the name of the architecture to wich the file corresponds.">
-                  <input id="element_1" name="element_1" class="field" type="text" maxlength="255" v-model="name" v-bind:placeholder="architecture.name"></div>
+                  <input id="element_11" name="element_11" class="field" type="text" maxlength="255" v-model="name" v-bind:placeholder="architecture.name"></div>
 		            </li>
             		<li id="li_2" class="li-ele">
-		              <label class="description" for="element_2">Public: </label>
+		              <label class="description" for="element_21">Public: </label>
 		              <div data-tip="Public: identifies the availability of this model for other users.">
-			              <input id="element_2" name="element_2" class="field" type="checkbox" maxlength="255" v-model="shared">
+			              <input id="element_21" name="element_21" class="field" type="checkbox" maxlength="255" v-model="shared">
                   </div>
 	            	</li>
 			          </ul>
                 </form>
                 </div>
+                <div v-if="status" class="note"><b>Attention:</b> Overriding the architecture is irreversible.</div>
             </div>
             <div class="savearch-footer" @click.stop>
                   <button class="savearch-default-button" @click="close()">Cancel</button>
@@ -182,6 +191,12 @@ export default {
   margin: 3%;
   float: left;
 }
+.note {
+clear:both;
+  font-family: Brandon_normal;
+  font-size: 18px;
+  color: red;
+}
 
 .description {
   font-family: Brandon_normal;
@@ -205,7 +220,7 @@ export default {
 
 .savearch-container {
   width: 500px;
-  height: 600px;
+  height: 300px;
   margin: 200px auto 0;
   padding: 20px 20px;
   background-color: #fff;

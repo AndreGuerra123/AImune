@@ -114,7 +114,7 @@ export default {
               </div>
               <uploadarch name="uploadarch" :token="token" :username="username" :list="list" :show="showUploader" @close="refocus($event)"></uploadarch>
               <savearch name="savearch" :token="token" :username="username" :show="showSaver" :architecture="architecture" :list="list" @close="refocus($event)"></savearch>
-              <deletearch name="deletearch" :token="token" :username="username" :show="showDeleter" @close="refocus($event)"></deletearch>
+              <deletearch name="deletearch" :token="token" :username="username" :show="showDeleter" :architecture="architecture" @close="refocus($event)"></deletearch>
 
               <div id="keras-editor" ref="keras-editor" class="design-editor"></div>
               <div class="design-selector">

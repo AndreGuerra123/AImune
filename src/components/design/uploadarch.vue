@@ -43,7 +43,7 @@ export default {
         this.validation();
         this.$refs.uploadarchdropzone.processQueue();
       } catch (error) {
-        this.error = error;
+        this.error = error.toString();
       }
     },
     validation: function() {

@@ -30,8 +30,6 @@ Vue.component('uploadarch', UploadArch);
 Vue.component('savearch',SaveArch);
 Vue.component('deletearch',DeleteArch);
 
-
-
 new Vue({
   el: '#app',
   render: h => h(App)
