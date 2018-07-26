@@ -9,16 +9,24 @@ export default {
   props: ["show", "token", "username", "architecture", "list"],
   data: function() {
     return {
-      status: true,
-      savedisplay: "Save",
+      name: null,
+      shared: false,
+      status: false,
       error: null,
-      name: this.architecture.name,
-      shared: this.architecture.shared
+      display: "Save New"
     };
   },
   methods: {
+    reset: function(){
+      this.name = null
+      this.shared = false,
+      this.status  = false
+      this.error  = null
+      this.display  = 'Save New'
+    },
     close: function(event) {
       this.$emit("close", this.name);
+      this.reset();
     },
     submit: async function() {
       try {
@@ -71,10 +79,10 @@ export default {
       handler: async function(newv, oldv) {
         if (newv == this.architecture.name) {
           this.status = true;
-          this.savedisplay = "Save";
+          this.display = "Save"
         } else {
           this.status = false;
-          this.savedisplay = "Save New";
+          this.display = "Save New"
         }
       }
     }
@@ -117,7 +125,7 @@ export default {
             </div>
             <div class="savearch-footer" @click.stop>
                   <button class="savearch-default-button" @click="close()">Cancel</button>
-                  <button class="savearch-default-button" @click="submit()">{{savedisplay}}</button>
+                  <button class="savearch-default-button" @click="submit()">{{display}}</button>
             </div>
             <error :show="error" @close="error=null"></error>
         </div>

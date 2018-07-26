@@ -5,7 +5,7 @@ export default {
   data: function() {
     return {
       name: null,
-      shared: null,
+      shared: false,
       error: null,
       dropzoneOptions: {
         url: "https://209.97.191.228:3000/design/savenew",
@@ -21,8 +21,9 @@ export default {
     };
   },
   methods: {
-    close: function(event) {
-      this.$emit("close",this.name);
+    closereset: function(event) {
+      this.close();
+      this.reset();
     },
     reset: function() {
       try {
@@ -30,7 +31,11 @@ export default {
       } finally {
         this.name = "";
         this.shared = false;
+        this.error = null;
       }
+    },
+    close: function() {
+      this.$emit("close", this.name);
     },
     sending: function(file, xhr, formData) {
       formData.append("name", this.name);
@@ -49,10 +54,6 @@ export default {
     validation: function() {
       if (!this.name) {
         throw new Error("User must select a name for the model architecture.");
-      } else if (!this.shared) {
-        throw new Error(
-          "User must decide the publicity of the model architecture."
-        );
       } else if (this.repeated()) {
         throw new Error("Model architecture name is already taken.");
       }
@@ -60,10 +61,6 @@ export default {
     repeated: function() {
       var badnames = this.list.map(a => a.name);
       return badnames.includes(this.name);
-    },
-    cancel: function() {
-      this.reset();
-      this.close();
     }
   },
   mounted: function() {
@@ -83,7 +80,7 @@ export default {
                 <div class="uploadarch-header">
                     <img src="../../assets/imgs/alcyomics-icon.png" alt="Alcyomics Icon" class="icon">
                 </div>
-                <vue-dropzone ref="uploadarchdropzone" id="uploadarchcustomdropzone" :options="dropzoneOptions" v-on:vdropzone-sending="sending" v-on:vdropzone-success="close"></vue-dropzone>
+                <vue-dropzone ref="uploadarchdropzone" id="uploadarchcustomdropzone" :options="dropzoneOptions" v-on:vdropzone-sending="sending" v-on:vdropzone-success="closereset"></vue-dropzone>
                 <div>
                    <form class="form">
 			          <ul class="ul-list">
@@ -104,7 +101,7 @@ export default {
             </div>
             <div class="uploadarch-footer" @click.stop>
                   <button class="uploadarch-default-button" @click="reset()">Reset</button>
-                  <button class="uploadarch-default-button" @click="cancel()">Cancel</button>
+                  <button class="uploadarch-default-button" @click="closereset()">Cancel</button>
                   <button class="uploadarch-default-button" @click="submit()">Submit</button>
             </div>
             <error :show="error" @close="error=null"></error>

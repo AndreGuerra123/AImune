@@ -33,7 +33,7 @@ export default {
     };
   },
   methods: {
-    close: function(value) {
+    close: function() {
       this.$emit("close");
     },
     updateList: async function() {
@@ -107,7 +107,7 @@ export default {
 
 <template name="design">
 <transition>
-        <div class="design-mask" @click="close" v-show="show">
+        <div class="design-mask" @click="close()" v-show="show">
             <div class="design-container" @click.stop>
               <div class="design-header">
                     <img src="../../assets/imgs/alcyomics-icon.png" alt="Alcyomics Icon" class="icon">
@@ -134,26 +134,58 @@ export default {
                     </li>
                   </ul>
               </div>
-              <div class="design-footer" @click.stop>
+               <div class="design-footer">
                   <button class="design-default-button" @click="showUploader=true" @close="showUploader = false">Upload</button>
                   <button class="design-default-button" @click="showSaver=true" @close="showSaver = false">Save</button>
                   <button class="design-default-button" @click="showDeleter=true" @close="showDeleter = false">Delete</button>
-              </div>
+             </div>
             </div>
         </div>
 </transition>
 </template>
 
 <style>
+
+.design-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: opacity 0.3s ease;
+}
+
+.design-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 90%;
+  padding: 20px 20px;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  transition: all 0.3s ease;
+  font-family: Brandon_normal;
+}
+
+.design-footer {
+  margin-left: 42%;
+  width:16%;
+  height:50px;
+}
+
 .design-editor {
   width: 100%;
   height: 80%;
 }
-
 .design-selector {
   width: 100%;
-  height: 20%;
+  height: 10%;
 }
+
+
 .design-entries {
   list-style-type: none;
   padding: 3px;
@@ -183,29 +215,6 @@ export default {
   border: 1px solid #ddd;
 }
 
-.design-mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  transition: opacity 0.3s ease;
-}
-
-.design-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 90%;
-  padding: 20px 20px;
-  background-color: #fff;
-  border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  transition: all 0.3s ease;
-  font-family: Brandon_normal;
-}
 .design-default-button {
   color: white;
   border-color: transparent;
@@ -229,12 +238,7 @@ export default {
   margin: 15px 2px;
 }
 
-.design-footer {
-  position: absolute;
-  width: 400px;
-  left: 800px;
-  bottom: -75px;
-}
+
 
 .design-enter {
   opacity: 0;

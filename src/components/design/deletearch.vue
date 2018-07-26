@@ -15,14 +15,19 @@ export default {
     };
   },
   methods: {
+    reset: function(){
+      this.name = '';
+      this.error = '';
+    },
     close: function(event) {
+      this.reset();
       this.$emit("close");
     },
     submit: async function() {
       try {
         this.validation();
         await this.submition();
-        this.close();
+        this.close(null);
       } catch (err) {
         this.error = err.toString();
       }
@@ -30,14 +35,15 @@ export default {
     submition: async function() {
       await ax
         .delete("design/delete", {
+          headers: { token: this.token },
           params: {
+            //for future reference it arrives as req.query
             user: this.username,
             name: this.name
-          },
-          headers: { token: this.token }
+          }
         })
         .catch(err => {
-          throw new Error(err.message);
+          throw err;
         });
     },
     validation: function() {
@@ -67,6 +73,11 @@ export default {
         this.close();
       }
     });
+  },
+  computed:{
+    placeholder: function(){
+      return this.architecture.name
+      }
   }
 };
 </script>
@@ -177,7 +188,7 @@ export default {
   font-size: 18px;
 }
 .note {
-  clear:both;
+  clear: both;
   font-family: Brandon_normal;
   font-size: 18px;
   color: red;

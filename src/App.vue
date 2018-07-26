@@ -16,6 +16,7 @@
     <regist :show="showRegister" @close="onRegist"></regist>
     <load :show="showLoader" :token="token" :username="username" @close="showLoader=false"></load>
     <design :show="showDesigner" :token="token" :username="username" @close="showDesigner=false"></design>
+    <train :show="showTrainer" :token="token" :username="username" @close="showTrainer=false"></train>
   </div>
 </template>
 

@@ -17,10 +17,14 @@ import Regist from './components/regist.vue'
 import Error from './components/error.vue'
 import Loader from './components/load.vue'
 import Designer from './components/design/design.vue'
-
 import UploadArch from './components/design/uploadarch.vue';
 import SaveArch from './components/design/savearch.vue';
 import DeleteArch from './components/design/deletearch.vue';
+
+import Train from './components/train/train.vue'
+import trainClone from  './components/train/trainclone.vue'
+import trainNew from  './components/train/trainnew.vue'
+import trainProceed from  './components/train/trainproceed.vue'
 
 Vue.component('load', Loader);
 Vue.component('error', Error);
@@ -29,6 +33,11 @@ Vue.component('design',Designer);
 Vue.component('uploadarch', UploadArch);
 Vue.component('savearch',SaveArch);
 Vue.component('deletearch',DeleteArch);
+Vue.component('train',Train)
+Vue.component('trainclone',trainClone);
+Vue.component('trainnew',trainNew);
+Vue.component('trainpeoceeed',trainProceed);
+
 
 new Vue({
   el: '#app',
