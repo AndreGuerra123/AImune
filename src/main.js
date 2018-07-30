@@ -5,12 +5,16 @@ import App from './App.vue'
 import KerasModelEditor from './assets/dependencies/keras-model-editor.js';
 Vue.use(KerasModelEditor);
 
+import VueParticles from 'vue-particles'
+Vue.use(VueParticles)
+
 import V2D from 'vue2-dropzone'
 import 'vue2-dropzone/dist/vue2Dropzone.min.css';
 
 import Datepicker from 'vuejs-datepicker';
 
 Vue.component('vue-dropzone',V2D);
+
 Vue.component('datepicker',Datepicker);
 
 import Regist from './components/regist.vue'
@@ -22,6 +26,7 @@ import SaveArch from './components/design/savearch.vue';
 import DeleteArch from './components/design/deletearch.vue';
 
 import Train from './components/train/train.vue'
+import trainDelete from './components/train/traindelete.vue';
 import trainClone from  './components/train/trainclone.vue'
 import trainNew from  './components/train/trainnew.vue'
 import trainProceed from  './components/train/trainproceed.vue'
@@ -34,9 +39,10 @@ Vue.component('uploadarch', UploadArch);
 Vue.component('savearch',SaveArch);
 Vue.component('deletearch',DeleteArch);
 Vue.component('train',Train)
+Vue.component('traindelete',trainDelete);
 Vue.component('trainclone',trainClone);
 Vue.component('trainnew',trainNew);
-Vue.component('trainpeoceeed',trainProceed);
+Vue.component('trainproceed',trainProceed);
 
 
 new Vue({

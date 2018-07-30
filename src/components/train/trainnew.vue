@@ -11,7 +11,7 @@ export default {
     return {
       name: null,
       shared: false,
-      architecture: null,
+      architecture: {name:null},
       error: null,
       archlist: null,
     };
@@ -24,7 +24,7 @@ export default {
     reset: function(){
       this.name=null;
       this.shared=false;
-      this.architecture=null;
+      this.architecture={name:null};
       this.error=null;
       this.archlist=null;
     },
@@ -65,6 +65,7 @@ export default {
         .post(
           "/model/new",
           {
+            name: this.name,
             user: this.username,
             date: new Date(),
             shared: this.shared,
@@ -90,6 +91,9 @@ export default {
     show: {
       handler: async function(newmodel,oldmodel){
       this.update();
+    },
+    model:{
+
     }
     }
   },
@@ -115,7 +119,7 @@ export default {
                   <ul class="trainnew-entries">
                     <li class='trainnew-entry-first'>
                     <label class="trainnew-form-label">Model Name</label>
-                    <input class="trainnew-form-control" :value = "name">
+                    <input class="trainnew-form-control" v-model="name">
                     </li>
                     <li class='trainnew-entry-first'>
                     <label class="trainnew-form-label">Model Architecture</label>

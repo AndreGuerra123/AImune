@@ -15,11 +15,14 @@ export default {
   },
   methods: {
     close: function(value) {
-      this.$emit("close",value);
-      this.name='';
+      this.$emit("close", value);
+      this.reset();
+    },
+    reset: function() {
+      (this.newname = ""), (this.error = null);
     },
     validation: function() {
-      if (!this.$optionsmodel) {
+      if (!this.model) {
         throw new Error("Please go back and select a valid model.");
       } else if (!this.newname) {
         throw new Error("Please insert a valid model name.");
@@ -27,39 +30,36 @@ export default {
         throw new Error("Please insert an unique model name.");
       }
     },
-    used: function(){
-
-        var badnames = this.list
-        .filter(a =>  a.user == this.username) //FROM THIS USER
-        .map(a => a.name);//GET THE EXISTENT NAMES OF MODELS
-        return badnames.includes(this.newname); //IF newname is prsent then badluck
+    used: function() {
+      var badnames = this.list
+        .filter(a => a.user == this.username) //FROM THIS USER
+        .map(a => a.name); //GET THE EXISTENT NAMES OF MODELS
+      return badnames.includes(this.newname); //IF newname is prsent then badluck
     },
     submit: async function() {
-
-      try{
+      try {
         this.validation();
         await ax
-        .post(
-          "/model/clone",
-          {
-            username: this.username,
-            source: this.model.id,
-            newname: this.newname
-          },
-          {
-            headers: { token: this.token }
-          }
-        )
-        .then(res => {
-          this.close(res.data.id);
-        })
-        .catch(err => {
-          throw err;
-        });
-      }catch(err){
-        this.error = err.toString()
+          .post(
+            "/model/clone",
+            {
+              user: this.username,
+              source: this.model._id,
+              name: this.newname
+            },
+            {
+              headers: { token: this.token }
+            }
+          )
+          .then(res => {
+            this.close(res.data);
+          })
+          .catch(err => {
+            throw err;
+          });
+      } catch (err) {
+        this.error = err.toString();
       }
-
     }
   },
   mounted: function() {
@@ -83,8 +83,8 @@ export default {
               <div class="trainclone-info">
                   <ul class="trainclone-entries">
                     <li class='trainclone-entry-first'>
-                    <label class="trainclone-form-label">New Model Name*:</label>
-                    <input class="trainclone-form-control" :value = "newname">
+                    <label class="trainclone-form-label">New Model Name</label>
+                    <input class="trainclone-form-control" v-model="newname">
                     </li>
                   </ul>
               </div>
@@ -123,9 +123,8 @@ export default {
 
 .trainclone-footer {
   display: block;
-  text-align:center;
+  text-align: center;
   margin-top: 10%;
-
 }
 .trainclone-info {
   width: 100%;

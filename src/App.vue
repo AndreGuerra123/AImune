@@ -1,5 +1,23 @@
 <template>
   <div id="app">
+    <vue-particles class="particles"
+        color="#ec70a8"
+        :particleOpacity="0.8"
+        linesColor="#4cb6c8"
+        :particlesNumber="30"
+        shapeType="triangle"
+        :particleSize="5"
+        :linesWidth="1"
+        :lineLinked="true"
+        :lineOpacity="0.8"
+        :linesDistance="450"
+        :moveSpeed="3"
+        :hoverEffect="true"
+        hoverMode="grab"
+        :clickEffect="true"
+        clickMode="bubble"
+      >
+    </vue-particles>
     <img src="./assets/imgs/alcyomics-logo.png" alt="Alcyomics Logo" class="logo">
     <ul class="bar">
         <li v-if="token" class="bar-li"><button class="bar-li-btn" @click="showLoader=true">Load</button></li>
@@ -17,6 +35,7 @@
     <load :show="showLoader" :token="token" :username="username" @close="showLoader=false"></load>
     <design :show="showDesigner" :token="token" :username="username" @close="showDesigner=false"></design>
     <train :show="showTrainer" :token="token" :username="username" @close="showTrainer=false"></train>
+
   </div>
 </template>
 
@@ -25,7 +44,6 @@ import axios from 'axios';
 const ax = axios.create({
           baseURL: "https://209.97.191.228:3000/",
           timeout: 2000});
-
 
 export default {
   name: "app",
@@ -187,6 +205,15 @@ export default {
   font-family: "Brandon_bolder_italic";
   src: url("./assets/fonts/Brandon Grotesque/Brandon_blk_it.otf")
     format("opentype");
+}
+
+.particles{
+position: absolute;
+top: 10px;
+bottom: 10px;
+left: 10px;
+right:10px;
+z-index: -1;
 }
 
 .logo {

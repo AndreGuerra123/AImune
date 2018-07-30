@@ -10,11 +10,19 @@ export default {
   props: ["show", "token", "username"],
   data: function() {
     return {
-      showClone:false,
-      showNew:false,
-      showProceed:false,
+      showDelete:false,
+      showClone: false,
+      showNew: false,
+      showProceed: false,
       list: null, //list of available models
-      model: {id:null,name:null,user:null,date:null,shared:null,architecture:{name:null}}
+      model: {
+        _id: null,
+        name: null,
+        user: null,
+        date: null,
+        shared: null,
+        architecture: { name: null, user: null }
+      }
     };
   },
   methods: {
@@ -32,6 +40,7 @@ export default {
         });
     },
     refocus: async function(value) {
+      this.showDelete = false;
       this.showClone = false;
       this.showNew = false;
       this.showProceed = false;
@@ -40,7 +49,7 @@ export default {
 
       if (this.list) {
         if (value) {
-          var idx = this.list.findIndex(({ id }) => id === value);
+          var idx = this.list.findIndex(({ _id }) => _id == value);
           if (idx != -1) {
             this.model = this.list[idx];
           } else {
@@ -70,7 +79,6 @@ export default {
         this.close();
       }
     });
-    this.refocus();
   }
 };
 </script>
@@ -82,36 +90,52 @@ export default {
               <div class="train-header">
                     <img src="../../assets/imgs/alcyomics-icon.png" alt="Alcyomics Icon" class="icon">
               </div>
+              <traindelete name="deletearch" :token="token" :username="username" :show="showDelete" :model="model" @close="refocus($event)"></traindelete>
               <trainclone name="trainclone" :token="token" :username="username" :list="list" :show="showClone" :model="model" @close="refocus($event)"></trainclone>
               <trainnew name="trainnew" :token="token" :username="username" :show="showNew" :architecture="model.architecture" :list="list" @close="refocus($event)"></trainnew>
-              <trainproceed name="trainproceed" :token="token" :username="username" :show="showProceed" :architecture="model.architecture" @close="refocus($event)"></trainproceed>
-
+              <trainproceed name="trainproceed" :token="token" :username="username" :show="showProceed" :model="model" @close="refocus($event)"></trainproceed>
               <div class="train-info">
-                  <ul class="train-entries">
-                    <li class='train-entry-first'><label class="train-form-label">ID</label>
-                    <output class="train-form-control">{{model.id}}</output></li>
-                    <li class='train-entry-first'><label class="train-form-label">Name</label>
-                    <output class="train-form-control">{{model.name}}</output></li>
-                    <li class='train-entry-first'><label class="train-form-label">Owner</label>
-                    <output class="train-form-control">{{model.user}}</output></li>
-                    <li class='train-entry-first'><label class="train-form-label">Date Created</label>
-                    <output class="train-form-control">{{model.date}}</output></li>
-                    <li class='train-entry-second'><label class="train-form-label">Architecture</label>
-                    <output class="train-form-control">{{model.architecture.name}}</output></li>
-                  </ul>
-              </div>
-              <div class="train-selector">
-                  <ul class="train-entries">
-                  <li class='train-entry-first'><label class="train-form-label">Select Model:</label></li>
-                  <select class="train-form-control" v-model="model">
+                <table class="train-table">
+                  <tr class="train-table-row">
+                    <th class="train-table-header">ID</th>
+                    <th class="train-table-header">Name</th>
+                    <th class="train-table-header">Owner</th>
+                  </tr>
+                  <tr class="train-table-row">
+                    <td class="train-table-data" >{{model._id}}</td>
+                    <td class="train-table-data" >{{model.name}}</td>
+                    <td class="train-table-data" >{{model.user}}</td>
+                  </tr>
+                  <tr class="train-table-row">
+                    <th class="train-table-header">Date Created</th>
+                    <th class="train-table-header">Architecture Name</th>
+                    <th class="train-table-header">Architecture Owner</th>
+                  </tr>
+                  <tr class="train-table-row">
+                    <td class="train-table-data" >{{model.date}}</td>
+                    <td class="train-table-data" >{{model.architecture.name}}</td>
+                    <td class="train-table-data" >{{model.architecture.user}}</td>
+                  </tr>
+                  <tr class="train-table-row">
+                    <th class="train-table-header"></th>
+                    <th class="train-table-header">Select Model:</th>
+                    <th class="train-table-header"></th>
+                  </tr>
+                  <tr class="train-table-row">
+                    <th class="train-table-data"></th>
+                    <th class="train-table-data">
+                      <select v-model="model">
                          <option :value="option" v-for="option in list">{{ option.name }}</option>
-                  </select>
-                  </ul>
+                      </select></th>
+                    <th class="train-table-data"></th>
+                  </tr>
+                </table>
               </div>
-               <div class="train-footer">
-                  <button class="train-default-button" @click="showClone=true" @close="showClone = false">Clone</button>
-                  <button class="train-default-button" @click="showNew=true" @close="showNew = false">New</button>
-                  <button class="train-default-button" @click="showProceed=true" @close="showProceed = false">Proceed</button>
+              <div class="train-footer">
+                <button class="train-default-button" @click="showDelete=true" @close="showDelete = false">Delete</button>
+                <button class="train-default-button" @click="showClone=true" @close="showClone = false">Clone</button>
+                <button class="train-default-button" @click="showNew=true" @close="showNew = false">New</button>
+                <button class="train-default-button" @click="showProceed = true" @close="showProceed = false">Proceed</button>
              </div>
             </div>
         </div>
@@ -144,47 +168,36 @@ export default {
 }
 
 .train-footer {
-  margin-top:20%;
-  margin-left: 27.5%;
-  width: 50%;
+  margin: 30% 17.5%;
+  width: 100%;
   height: 50px;
 }
-.train-info{
-   width: 75%;
-  height: 50%
-}
-.train-selector {
-  width: 80%;
-  height: 30%
+.train-info {
+  margin-top: 5%;
+  margin-bottom: 5%;
+  width: 100%;
+  height: 50%;
 }
 
-.train-entries {
-  list-style-type: none;
-  padding: 3px;
-  margin: 3%;
-}
+.train-table{
+  width:100%;
 
-.train-entry-first {
-  float: left;
-  margin-left: 5%;
-  margin-right: 0;
 }
-.train-entry-second {
-  float: right;
-  margin-left: 0;
-  margin-right: 5%;
+.train-table-row{
+  border-bottom: 5px;
+}
+.train-table-header{
+  font-family: Brandon_lighter;
+  text-align:justify
+}
+.train-table-data{
+  font-family: Brandon_thin;
+  text-align: justify;
 }
 
 .train-form-label {
   display: block;
-  font-family: Brandon_lighter;
-}
 
-.train-form-control {
-  display: block;
-  padding: 0.3em 0.3em;
-  line-height: 1.5;
-  border: 1px solid #ddd;
 }
 
 .train-default-button {
