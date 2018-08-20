@@ -6,106 +6,120 @@ const ax = axios.create({
 });
 export default {
   template: "#proceed-dataset-template",
-  props: ["show", "token", "username","model"],
+  props: ["show", "token", "username", "model"],
   data: function() {
     return {
       width: 200,
       height: 200,
       rotate: true,
       normalise: true,
-      patients:  ["-1"],
-      conditions:  ["-1"],
-      compounds:  ["-1"],
-      classes:  ["-1"],
+      patients: ["-1"],
+      conditions: ["-1"],
+      compounds: ["-1"],
+      classes: ["-1"],
       patients_opts: null,
-      conditions_opts:null,
+      conditions_opts: null,
       compounds_opts: null,
       classes_opts: null,
-      error: null
-
+      error: null,
+      date: null
     };
   },
   methods: {
     close: function() {
       this.$emit("close");
     },
-    validation: function(){
-      if(this.width<50 || this.height<50){
-        throw new Error("Width and height should be bigger than 50px.")
-      }else if(this.rotate == null ){
-        throw new Error("Select valid rotation.")
-      }else if(this.normalise == null){
-        throw new Error("Select valid normalisation.")
-      }else if(this.classes.length==1 && this.classes[0]!="-1"){
-        throw new Error("Select at least two valid classes.")
+    validation: function() {
+      if (this.width < 50 || this.height < 50) {
+        throw new Error("Width and height should be bigger than 50px.");
+      } else if (this.rotate == null) {
+        throw new Error("Select valid rotation.");
+      } else if (this.normalise == null) {
+        throw new Error("Select valid normalisation.");
+      } else if (this.classes.length == 1 && this.classes[0] != "-1") {
+        throw new Error("Select at least two valid classes.");
       }
     },
-    update: async function(){
-      try{
+    update: async function() {
+      try {
         this.validation();
-        await ax.post("dataset/update",{
-          source: this.model._id,
-          patients: this.patients,
-          conditions:this.conditions,
-          compounds:this.compounds,
-          classes:this.classes,
-          rotate:this.rotate,
-          normalise:this.normalise,
-          width:this.width,
-          height:this.height
-        },{
-          headers:{token:this.token}
-        })
-        this.close()
-        this.reset()
-
-      }catch(err){
+        await ax.post(
+          "dataset/update",
+          {
+            source: this.model._id,
+            patients: this.patients,
+            conditions: this.conditions,
+            compounds: this.compounds,
+            classes: this.classes,
+            rotate: this.rotate,
+            normalise: this.normalise,
+            width: this.width,
+            height: this.height
+          },
+          {
+            headers: { token: this.token }
+          }
+        );
+        this.close();
+        this.reset();
+      } catch (err) {
         this.error = err.toString();
       }
     },
-    reset: function(){
-      this.width= 200,
-      this.height= 200,
-      this.rotate= true,
-      this.normalise= true,
-      this.patients=  ["-1"],
-      this.conditions=  ["-1"],
-      this.compounds=  ["-1"],
-      this.classes=  ["-1"]
+    reset: function() {
       this.error = null;
     },
-    getDatasetConfiguration: async function(){
-      await ax.get("dataset/current",{
-        params:{source: this.model._id},
-        header:{token:this.token}
-      }).then(res => {
-        const{ rotate, normalise, patients, conditions, compounds, classes, width, height} = res.data
-        this.assign(this.rotate,rotate);
-        this.assign(this.normalise,normalise);
-        this.assign(this.patients,patients);
-        this.assign(this.conditions,conditions);
-        this.assign(this.compounds,compounds);
-        this.assign(this.classes,classes);
-        this.assign(this.width,width);
-        this.assign(this.height,height);
-         }).catch(err => this.error = err.toString());
+    getDatasetConfiguration: async function() {
+      await ax
+        .get("dataset/current", {
+          params: { source: this.model._id },
+          header: { token: this.token }
+        })
+        .then(res => {
+          if (res.data) {
+            const {
+              rotate,
+              normalise,
+              patients,
+              conditions,
+              compounds,
+              classes,
+              width,
+              height,
+              date
+            } = res.data;
+            this.rotate= rotate;
+            this.normalise= normalise;
+            this.patients= patients;
+            this.conditions= conditions;
+            this.compounds= compounds;
+            this.classes= classes;
+            this.width= width;
+            this.height= height;
+            this.date = date;
+          }
+        })
+        .catch(err => (this.error = err.toString()));
     },
-    assign:function(to,from){
-      if(from!=null && from!=undefined){
-        to = from;
-      }
-    },
-    getDatasetOptions: async function(){
-      await ax.get("dataset/options",{
-        params:{user:this.username},
-        header:{token:this.token}
-      }).then(res =>{
-        const {patients_opts,conditions_opts,compounds_opts,classes_opts}=res.data;
-        this.patients_opts = patients_opts;
-        this.conditions_opts = conditions_opts;
-        this.compounds_opts = compounds_opts;
-        this.classes_opts = classes_opts;
-        }).catch(err => this.error = err.toString());
+    getDatasetOptions: async function() {
+      await ax
+        .get("dataset/options", {
+          params: { user: this.username },
+          header: { token: this.token }
+        })
+        .then(res => {
+          const {
+            patients_opts,
+            conditions_opts,
+            compounds_opts,
+            classes_opts
+          } = res.data;
+          this.patients_opts = patients_opts;
+          this.conditions_opts = conditions_opts;
+          this.compounds_opts = compounds_opts;
+          this.classes_opts = classes_opts;
+        })
+        .catch(err => (this.error = err.toString()));
     }
   },
   mounted: function() {
@@ -116,7 +130,7 @@ export default {
     });
   },
   watch: {
-    show: function(news, olds){
+    show: function(news, olds) {
       this.getDatasetOptions();
       this.getDatasetConfiguration();
     }
@@ -128,6 +142,7 @@ export default {
 <transition>
         <div class="proceed-dataset-mask" @click="close" v-show="show">
             <div class="proceed-dataset-container" @click.stop>
+                <span :value="date"></span>
                 <div>
                    <form class="form">
 			          <ul class="ul-list">
@@ -188,15 +203,20 @@ export default {
                     </select>
 		              </div>
 		            </li>
+                 <li id="li_3" class="li-ele">
+                    <label class="description" for="date_dataset">Last Modified </label>
+                     <div data-tip="Date: represents the date when the dataset configuration was last updated."> </div>
+                     <output id="date_dataset" name="date_dataset" class="field">{{date}}</output>
+                     </li>
 			          </ul>
 		            </form>
                 </div>
                 <error :show="error" @close="error=null"></error>
             </div>
-             <div class="load-footer" @click.stop>
-                  <button class="load-default-button" @click="reset()">Reset</button>
-                  <button class="load-default-button" @click="close()">Cancel</button>
-                  <button class="load-default-button" @click="update()">Update</button>
+             <div class="proceed-dataset-footer" @click.stop>
+                  <button class="proceed-dataset-default-button" @click="reset()">Reset</button>
+                  <button class="proceed-dataset-default-button" @click="close()">Cancel</button>
+                  <button class="proceed-dataset-default-button" @click="update()">Update</button>
             </div>
         </div>
 </transition>
@@ -215,7 +235,7 @@ export default {
 }
 .proceed-dataset-container {
   width: 500px;
-  height: 430px;
+  height: 470px;
   margin: 200px auto 0;
   padding: 20px 20px;
   background-color: #fff;
@@ -237,6 +257,11 @@ export default {
 }
 .proceed-dataset-default-button:hover {
   background-color: #ec70a8;
+}
+.proceed-dataset-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 [data-tip] {
@@ -306,13 +331,12 @@ export default {
   font-family: Brandon_normal;
   font-size: 22px;
 }
+
 .field {
   font-family: Brandon_lighter;
   font-size: 18px;
   width: 170px;
-  max-width: 170px;
-  max-height: 30px;
-
+  height: 30px;
 }
 
 </style>

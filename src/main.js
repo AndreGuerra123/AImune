@@ -7,8 +7,17 @@ Vue.use(KerasModelEditor);
 import Multiselect from 'vue-multiselect'
 Vue.component('multiselect', Multiselect)
 
+import VueProgress from 'vue-progress'
+Vue.use(VueProgress)
+
 import VueParticles from 'vue-particles'
 Vue.use(VueParticles)
+
+import VueTimeago from 'vue-timeago'
+
+Vue.use(VueTimeago, {
+  name: 'timeago', // Component name, `Timeago` by default
+  locale: 'en'})
 
 import V2D from 'vue2-dropzone'
 import 'vue2-dropzone/dist/vue2Dropzone.min.css';
@@ -36,6 +45,8 @@ import trainProceed from  './components/train/trainproceed.vue'
 import proceedConfig from './components/train/proceed/config.vue'
 import proceedDataset from './components/train/proceed/dataset.vue'
 import proceedLearning from './components/train/proceed/learning.vue'
+import resetLearning from './components/train/proceed/resetlearning.vue'
+
 import proceedResults from './components/train/proceed/results.vue'
 
 
@@ -55,6 +66,7 @@ Vue.component('trainproceed',trainProceed);
 Vue.component('proceed-config', proceedConfig);
 Vue.component('proceed-dataset', proceedDataset);
 Vue.component('proceed-learning', proceedLearning);
+Vue.component('resetlearn', resetLearning)
 Vue.component('proceed-results', proceedResults);
 
 new Vue({

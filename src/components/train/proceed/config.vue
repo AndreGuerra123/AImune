@@ -6,87 +6,119 @@ const ax = axios.create({
 });
 export default {
   template: "#proceed-config-template",
-  props: ["show", "token", "username","model"],
+  props: ["show", "token", "username", "model"],
   data: function() {
     return {
-      loss_opts: ["absoluteDifference","computeWeightedLoss","cosineDistance","hingeLoss","huberLoss","logLoss","meanSquaredError","softmaxCrossEntropy"],
-      optimiser_opts: ["sgd","momentum","adagrad","adadelta","adam","adamax","rmsprop"],
-      metrics_opts: ["binaryAccuracy","binaryCrossentropy","categoricalAccuracy","categoricalCrossentropy","cosineProximity","meanSquaredError"],
-      loss: 'meanSquaredError',
-      optimiser:'sgd',
-      metrics:["-1"],
+      loss_opts: [
+        "absoluteDifference",
+        "computeWeightedLoss",
+        "cosineDistance",
+        "hingeLoss",
+        "huberLoss",
+        "logLoss",
+        "meanSquaredError",
+        "softmaxCrossEntropy"
+      ],
+      optimiser_opts: [
+        "sgd",
+        "momentum",
+        "adagrad",
+        "adadelta",
+        "adam",
+        "adamax",
+        "rmsprop"
+      ],
+      metrics_opts: [
+        "accuracy"
+      ],
+      loss: "meanSquaredError",
+      optimiser: "sgd",
+      metrics: ["-1"],
       batchsize: 1,
       epochs: 100,
-      error: null
+      error: null,
+      date: null
     };
   },
   methods: {
     close: function() {
       this.$emit("close");
     },
-    reset: function(){
-      this.loss= 'meanSquaredError';
-      this.optimiser='sgd';
-      this.metrics=["-1"];
-      this.batchsize= 1;
-      this.epochs= 100;
-      this.error= null;
+    reset: function() {
+      this.error = null;
     },
-    update: async function(){
-      try{
-       await ax.post("config/update",{
-         source: this.model._id,
-          loss: this.loss,
-          optimiser: this.optimiser,
-          metrics: this.metrics,
-          epochs: this.epochs,
-          batchsize: this.batchsize
-        },{
-          headers:{token:this.token}
-        }).then(res => {
-            this.close()
-            this.reset()
-        }).catch(error =>{
-          throw new Error(error.toString())
-        })
-
-      }catch(err){
+    update: async function() {
+      try {
+        await ax
+          .post(
+            "config/update",
+            {
+              source: this.model._id,
+              loss: this.loss,
+              optimiser: this.optimiser,
+              metrics: this.metrics,
+              epochs: this.epochs,
+              batchsize: this.batchsize
+            },
+            {
+              headers: { token: this.token }
+            }
+          )
+          .then(res => {
+            this.close();
+            this.reset();
+          })
+          .catch(error => {
+            throw new Error(error.toString());
+          });
+      } catch (err) {
         this.error = err.toString();
       }
-
     },
-    validation: function(){
-       if(!this.loss){
-        throw new Error("Please, select a valid loss function.")
-      }else if(!this.optimiser){
-        throw new Error("Please, select a valid optimiser function.")
-      }else if(!this.batchsize || this.bacthsize<1){
-        throw new Error("Please, select a valid batchsize.")
-      }else if(!this.epochs || this.epochs < 1){
-        throw new Error("Please, select a valid epoch value.")
-      }else if(!this.metrics || this.metrics.length<1){
-        throw new Error("Select at least one valid metric.")
+    validation: function() {
+      if (!this.loss) {
+        throw new Error("Please, select a valid loss function.");
+      } else if (!this.optimiser) {
+        throw new Error("Please, select a valid optimiser function.");
+      } else if (!this.batchsize || this.bacthsize < 1) {
+        throw new Error("Please, select a valid batchsize.");
+      } else if (!this.epochs || this.epochs < 1) {
+        throw new Error("Please, select a valid epoch value.");
+      } else if (!this.metrics || this.metrics.length < 1) {
+        throw new Error("Select at least one valid metric.");
       }
     },
-    getConfiguration: async function(){
-      await ax.get("config/current",{
-        params:{source:this.model._id},
-        header:{token:this.token}
-      }).then(res =>{
-        const {loss,optimiser,epochs,batchsize,metrics}=res.data;
-         this.assign(this.loss,loss);
-         this.assign(this.optimiser,optimiser);
-         this.assign(this.epochs,epochs);
-         this.assign(this.bacthsize,batchsize);
-         this.assign(this.metrics,metrics);
-        }).catch(err => this.error = err.toString());
+    getConfiguration: async function() {
+      await ax
+        .get("config/current", {
+          params: { source: this.model._id },
+          header: { token: this.token }
+        })
+        .then(res => {
+          if (res.data) {
+            const {
+              loss,
+              optimiser,
+              epochs,
+              batchsize,
+              metrics,
+              date
+            } = res.data;
+            this.loss= loss;
+            this.optimiser= optimiser;
+            this.epochs= epochs;
+            this.bacthsize= batchsize;
+            this.metrics= metrics;
+            this.date= date;
+          }
+        })
+        .catch(err => (this.error = err.toString()));
     },
-    assign:function(to,from){
-      if(from!=null && from!=undefined){
+    assign: function(to, from) {
+      if (from != null && from != undefined) {
         to = from;
       }
     }
-
   },
   mounted: function() {
     document.addEventListener("keydown", e => {
@@ -96,7 +128,7 @@ export default {
     });
   },
   watch: {
-    show: function(news, olds){
+    show: function(news, olds) {
       this.getConfiguration();
     }
   }
@@ -108,19 +140,18 @@ export default {
         <div class="proceed-config-mask" @click="close" v-show="show">
             <div class="proceed-config-container" @click.stop>
               <div>
-                <form class="form">
 			          <ul class="ul-list">
       					  <li id="li_1" class="li-ele">
 		                <label class="description" for="element_1"> Loss: </label>
 			              <div data-tip="Loss: represents the function which calculate the loss in order to compare iterations."> </div>
-                    <select multiple="false"  id="element_4" name="element_4" class="field"  v-model="loss">
+                    <select  id="element_4" name="element_4" class="field"  v-model="loss">
                          <option :value="los" v-for="los in loss_opts">{{ los }}</option>
                     </select>
 		              </li>
             		    <li id="li_2" class="li-ele">
 		                <label class="description" for="element_2">Optimiser: </label>
 			              <div data-tip="Optimiser: respresents the algorithm which performes the optimisation."> </div>
-			              <select multiple="false"  id="element_4" name="element_4" class="field"  v-model="optimiser">
+			              <select id="element_4" name="element_4" class="field"  v-model="optimiser">
                          <option :value="opt" v-for="opt in optimiser_opts">{{ opt }}</option>
                     </select>
 	            	  </li>
@@ -140,10 +171,14 @@ export default {
                   <li id="li_3" class="li-ele">
 		                <label class="description" for="element_3">Batch Size: </label>
 		                <div data-tip="Batch Size: represents the number of samples to be loaded per iteration."> </div>
-			              <input id="element_3" name="element_3" class="field" type="number"   v-model="batchsize">
+			              <input id="element_3" name="element_3" class="field" type="number" v-model="batchsize">
 		              </li>
+                  <li id="li_3" class="li-ele">
+                    <label class="description" for="element_3">Last Modified </label>
+                     <div data-tip="Date: represents the date when the model configuration was last updated."> </div>
+                     <output id="element_3" name="element_3" class="field">{{date}}</output>
+                </li>
                 </ul>
-		            </form>
                 </div>
                 <error :show="error" @close="error=null"></error>
 
@@ -267,7 +302,5 @@ export default {
   width: 170px;
   max-width: 170px;
   max-height: 30px;
-
 }
-
 </style>
