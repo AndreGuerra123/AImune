@@ -34,7 +34,7 @@ export default {
     },
     submition: async function() {
       await ax
-        .post("learning/reset",{source: this.model},{
+        .post("learning/reset",{source: this.model._id},{
           headers: { token: this.token }
         })
         .catch(err => {
@@ -84,18 +84,18 @@ export default {
 			          <ul class="ul-list">
       					<li id="li_1" class="li-ele">
 		              <label class="description" for="element_1">Confirm Model Name*: </label>
-			            <div data-tip="Confirm Model Name: confirms the model name for wich the learning step will be deleted.">
+			            <div data-tip="Confirm Model Name: confirms the model name for wich the learning step will be cancel/reset.">
                   <input id="element_1" name="element_1" class="field" type="text" maxlength="255" v-model="name" v-bind:placeholder="model.name"></div>
 		            </li>
 			          </ul>
                 </form>
                 </div>
-                <div class="note"><b>Attention:</b> Deletion of the model learning step is irreversible. The weights file will be deleted aswell as any job queue reference.</div>
+                <div class="note"><b>Attention:</b> Cancel/Reset of the model learning step is irreversible. The weights file will be deleted aswell as any job queue reference.</div>
 
             </div>
                          <div class="resetlearn-footer" @click.stop>
                   <button class="resetlearn-default-button" @click="close()">Cancel</button>
-                  <button v-if="confirmed" class="resetlearn-default-button" @click="submit()">Delete Now</button>
+                  <button v-if="confirmed" class="resetlearn-default-button" @click="submit()">Cancel/Reset Now</button>
             </div>
             <error :show="error" @close="error=null"></error>
         </div>
