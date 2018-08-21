@@ -45,7 +45,6 @@ import trainProceed from  './components/train/trainproceed.vue'
 import proceedConfig from './components/train/proceed/config.vue'
 import proceedDataset from './components/train/proceed/dataset.vue'
 import proceedLearning from './components/train/proceed/learning.vue'
-import resetLearning from './components/train/proceed/resetlearning.vue'
 
 import proceedResults from './components/train/proceed/results.vue'
 
@@ -66,7 +65,6 @@ Vue.component('trainproceed',trainProceed);
 Vue.component('proceed-config', proceedConfig);
 Vue.component('proceed-dataset', proceedDataset);
 Vue.component('proceed-learning', proceedLearning);
-Vue.component('resetlearn', resetLearning)
 Vue.component('proceed-results', proceedResults);
 
 new Vue({

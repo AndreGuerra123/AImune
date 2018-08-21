@@ -80,6 +80,29 @@
             this.error = err.toString();
           });
       },
+      reset: async function(){
+        await ax
+          .post(
+            "learning/reset", {
+              source: this.model._id
+            }, {
+              headers: {
+                token: this.token
+              }
+            }
+          )
+          .then(() => {
+            this.update();
+          })
+          .catch(err => {
+            this.error = err.toString();
+          });
+
+      },
+      restart: async function(){
+        await reset()
+        await start()
+      },
       msToTime: function (s) {
         var pad = (n, z = 2) => ("00" + n).slice(-z);
         return (
@@ -166,14 +189,10 @@
 
       </div>
       <error :show="error" @close="error = null"></error>
-      <resetlearn :show="reset" :token="token" :username="username" :model="model" @close="update()"></resetlearn>
-      <!--  <cancellearn :show="reset" :token="token" :username="username" :model="model" @close="update()"></cancellearn>
-            <restartlearn :show="reset" :token="token" :username="username" :model="model" @close="update()"></restartlearn> -->
       <div class="proceed-learning-footer" @click.stop>
-        <button class="proceed-learning-default-button" @click="reset=true">Reset</button>
-        <button v-if="jobprops.id" class="proceed-learning-default-button" @click="cancel=true">Cancel</button>
+        <button v-if="jobprops.id" class="proceed-learning-default-button" @click="reset()">Cancel/Reset</button>
         <button v-if="!jobprops.id" class="proceed-learning-default-button" @click="start()">Start</button>
-        <button v-if="jobprops.id" class="proceed-learning-default-button" @click="restart=true">Restart</button>
+        <button v-if="jobprops.id" class="proceed-learning-default-button" @click="restart()">Restart</button>
       </div>
     </div>
   </transition>
