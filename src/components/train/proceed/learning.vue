@@ -1,8 +1,9 @@
 <script>
   import axios from "axios";
+  const get = require('lodash/get')
   const ax = axios.create({
     baseURL: "https://209.97.191.228:3000/",
-    timeout: 3000
+    timeout: 5000
   });
   export default {
     template: "#proceed-learning-template",
@@ -16,25 +17,22 @@
           step: (state, bar) => {
             if (bar.value() > 0) {
               var value = Math.round(bar.value() * 100) + " %";
-              if (this.jobprops.progress_description) {
-                value = value + " - " + this.jobprops.progress_description;
+              if (this.job.description) {
+                value = value + " - " + this.job.description;
               }
               bar.setText(value);
             }
           }
         },
-        jobprops: {
-          id: null,
+        job: {
+          _id: null,
           started: null,
           finished: null,
-          progress_value: null,
-          progress_description: null,
+          value: null,
+          description: null,
           error: null
         },
-        error: null,
-        reset: null,
-        cancel: null,
-        restart: null
+        error: null
       };
     },
     methods: {
@@ -52,14 +50,20 @@
             }
           })
           .then(res => {
-            this.jobprops = res.data;
+            this.job = {_id: get(res.data,'_id'),
+            started: get(res.data,'started'),
+            finished: get(res.data,'finished'),
+            error: get(res.data,'error'),
+            value: get(res.data,'value'),
+            description:get(res.data,'description')
+            };
           })
           .catch(err => {
             this.error = err.toString();
           });
       },
       finished: function () {
-        var millis = this.jobprops.finished - this.jobprops.started;
+        var millis = this.job.finished - this.job.started;
         return this.msToTime(millis);
       },
       start: async function () {
@@ -73,14 +77,12 @@
               }
             }
           )
-          .then(() => {
-            this.update();
-          })
           .catch(err => {
             this.error = err.toString();
           });
+          this.update()
       },
-      reset: async function(){
+      reset: async function () {
         await ax
           .post(
             "learning/reset", {
@@ -90,18 +92,14 @@
                 token: this.token
               }
             }
-          )
-          .then(() => {
-            this.update();
-          })
-          .catch(err => {
+          ).catch(err => {
             this.error = err.toString();
           });
-
+          this.update()
       },
       restart: async function(){
-        await reset()
-        await start()
+        await this.reset()
+        await this.start()
       },
       msToTime: function (s) {
         var pad = (n, z = 2) => ("00" + n).slice(-z);
@@ -116,9 +114,6 @@
         );
       },
       update: function () {
-        this.reset = null;
-        this.cancel = null;
-        this.restart = null;
         this.getLearningProgress();
       }
     },
@@ -133,10 +128,10 @@
       show: function (news, olds) {
         this.getLearningProgress();
       },
-      jobprops: {
+      job: {
         handler: function (newq, oldq) {
-          this.error = this.jobprops.error; //Shows the error as modal
-          this.$refs.line.animate(this.jobprops.progress_value); //updates progressbar
+          this.error = this.job.error; //Shows the error as modal
+          this.$refs.line.animate(this.job.value); //updates progressbar
         },
         deep: true
       }
@@ -152,34 +147,34 @@
           <li id="li_1" class="li-ele">
             <label class="description" for="element_1111">Job ID</label>
             <div data-tip="Job ID: Current job in the queue for this model.">
-              <div id="element_1111" name="element_1111" class="field" type="text">{{jobprops.id}}</div>
+              <div id="element_1111" name="element_1111" class="field" type="text">{{job._id}}</div>
             </div>
           </li>
           <li id="li_2" class="li-ele">
             <label class="description" for="element_212">Date Started</label>
             <div data-tip="Date started: the exact date the job started to be executed.">
-              <div id="element_212" name="element_212" class="field" type="text">{{jobprops.started}}</div>
+              <div id="element_212" name="element_212" class="field" type="text">{{job.started}}</div>
             </div>
           </li>
-          <li v-if="jobprops.finished" id="li_2" class="li-ele">
+          <li v-if="job.finished" id="li_2" class="li-ele">
             <label class="description" for="element_2">Date Finished</label>
             <div data-tip="Date Finished: the exact date the job call was finished.">
-              <div id="element_2" name="element_2" class="field">{{jobprops.finished}}</div>
+              <div id="element_2" name="element_2" class="field">{{job.finished}}</div>
             </div>
           </li>
           <li id="li_2" class="li-ele">
             <label class="description" for="element_33">Elapsed Time</label>
             <div data-tip="Elapsed Time: the time elapsed from the beggining of execution of the job.">
               <div class="field" name="element_33">
-                <timeago v-if="!jobprops.finished && jobprops.started" :datetime="jobprops.started" :auto-update="1"></timeago>
-                <div v-if="jobprops.finished">{{finished()}}</div>
+                <timeago v-if="!job.finished && job.started" :datetime="job.started" :auto-update="1"></timeago>
+                <div v-if="job.finished">{{finished()}}</div>
               </div>
             </div>
           </li>
-          <li v-if="jobprops.error" id="li_2" class="li-ele">
+          <li v-if="job.error" id="li_2" class="li-ele">
             <label class="description" for="element_2">Error</label>
             <div data-tip="Error: any error produced during the call will be displayed here.">
-              <div id="element_2" name="element_2" class="fielderror">{{jobprops.error}}</div>
+              <div id="element_2" name="element_2" class="fielderror">{{job.error}}</div>
             </div>
           </li>
         </ul>
@@ -190,9 +185,9 @@
       </div>
       <error :show="error" @close="error = null"></error>
       <div class="proceed-learning-footer" @click.stop>
-        <button v-if="jobprops.id" class="proceed-learning-default-button" @click="reset()">Cancel/Reset</button>
-        <button v-if="!jobprops.id" class="proceed-learning-default-button" @click="start()">Start</button>
-        <button v-if="jobprops.id" class="proceed-learning-default-button" @click="restart()">Restart</button>
+        <button v-if="job._id" class="proceed-learning-default-button" @click="reset()">Cancel/Reset</button>
+        <button v-if="!job._id" class="proceed-learning-default-button" @click="start()">Start</button>
+        <button v-if="job._id" class="proceed-learning-default-button" @click="restart()">Restart</button>
       </div>
     </div>
   </transition>

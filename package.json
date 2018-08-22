@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "keras-model-viewer": "0.0.4",
+    "lodash": "^4.17.10",
     "vue": "^2.5.11",
     "vue-multiselect": "^2.1.0",
     "vue-particles": "^1.0.9",

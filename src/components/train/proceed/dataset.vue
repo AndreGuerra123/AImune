@@ -9,10 +9,28 @@ export default {
   props: ["show", "token", "username", "model"],
   data: function() {
     return {
-      width: 200,
-      height: 200,
-      rotate: true,
-      normalise: true,
+      width: 100,
+      height: 100,
+      center: false,
+      normalise: false,
+      data_format: "channels_last",
+      color_format: "RGB",
+      rescale: 1/255,
+      rounds: 0,
+      transform: false,
+      random: false,
+      keep: false,
+      rotation: 0.0,
+      width_shift: 0.0,
+      height_shift: 0.0,
+      shear: 0.0,
+      channel_shift: 0.0,
+      brightness: 1.0,
+      zoom: 1.0,
+      horizontal_flip: false,
+      vertical_flip: false,
+      fill_mode: "nearest",
+      cval: 0.0,
       patients: ["-1"],
       conditions: ["-1"],
       compounds: ["-1"],
@@ -21,24 +39,70 @@ export default {
       conditions_opts: null,
       compounds_opts: null,
       classes_opts: null,
+      data_format_opts: ["channels_last", "channels_first"],
+      color_format_opts: ["L", "RGB", "RGBA"],
+      fill_mode_opts: ["nearest","bilinear","bicubic","hamming","box","lanczos"],
       error: null,
       date: null
+
     };
   },
   methods: {
     close: function() {
       this.$emit("close");
     },
-    validation: function() {
-      if (this.width < 50 || this.height < 50) {
-        throw new Error("Width and height should be bigger than 50px.");
-      } else if (this.rotate == null) {
-        throw new Error("Select valid rotation.");
-      } else if (this.normalise == null) {
-        throw new Error("Select valid normalisation.");
-      } else if (this.classes.length == 1 && this.classes[0] != "-1") {
-        throw new Error("Select at least two valid classes.");
+    isValidBoolean: function(obj,msg){
+      if(typeof(obj)!="boolean"){
+        throw new Error(msg)
       }
+    },
+    isValidOption: function(obj,opts,msg){
+      if(!opts.includes(obj)){
+        throw new Error(msg)
+      }
+    },
+    isValidOptionPlus: function(obj,opts,msg){
+      if(!obj.includes('-1') && obj.some((x)=>{!opts.includes(x)})){
+        throw new Error(msg)
+      }
+    },
+    isValidDimension: function(obj,msg){
+      if(obj < 1 || !Number.isInteger(obj)){
+        throw new Error(msg)
+      }
+    },
+    isZeroOrInteger: function(obj,msg){
+      if(obj < 0 || !Number.isInteger(obj)){
+        throw new Error(msg)
+      }
+    },
+    validation: function() {
+        this.isValidBoolean(this.center,'Center is not a valid boolean.')
+        this.isValidBoolean(this.normalise,'Normalise is not a valid boolean.')
+        this.isValidBoolean(this.transform,'Transform is not a valid boolean.')
+        this.isValidBoolean(this.random,'Random is not a valid boolean.')
+        this.isValidBoolean(this.keep,'Keep is not a valid boolean.')
+        this.isValidBoolean(this.horizontal_flip,'Horizontal flip is not a valid boolean.')
+        this.isValidBoolean(this.vertical_flip,'Vertical flip is not a valid boolean.')
+        this.isValidOption(this.data_format,this.data_format_opts,'Data format selected is not a valid option.')
+        this.isValidOption(this.color_format,this.color_format_opts,'Color format selected is not a valid option.')
+        this.isValidOption(this.fill_mode,this.fill_mode_opts,'Fill mode selected is not a valid option.')
+        this.isValidOptionPlus(this.patients,this.patients,'Some patients selected are not a valid option.')
+        this.isValidOptionPlus(this.conditions,this.conditions,'Some conditions selected are not a valid option.')
+        this.isValidOptionPlus(this.compounds,this.compounds,'Some compounds selected are not a valid option.')
+        this.isValidOptionPlus(this.classes,this.classes,'Some classes selected are not a valid option.')
+        this.isValidDimension(this.width,'Width is not a valid dimension.')
+        this.isValidDimension(this.height,'Height is not a valid dimension.')
+        if(!Number.isInteger(this.rounds) || this.rounds < 0 ) throw new Error('Rounds is not a valid number of rounds for augmentation (>0, int).')
+        if(typeof(this.rescale)!='number' || this.rescale == 0) throw new Error('Rescaling by a factor of zero would clear all data.')
+        if(typeof(this.cval)!='number' || this.cval < 0) throw new Error('Cval value is not a valid positive number or zero.')
+        if(typeof(this.width_shift)!='number' || this.width_shift < 0 || this.width_shift > 1 ) throw new Error('Width shift alue is not a valid positive number or zero.')
+        if(typeof(this.height_shift)!='number' || this.height_shift < 0 || this.height_shif > 1 ) throw new Error('Height shift value is not a valid positive number or zero.')
+        if(typeof(this.channel_shift)!='number' || this.channel_shift < 0 || this.channel_shift > 1 ) throw new Error('Channel shift value is not a valid positive number or zero.')
+        if(typeof(this.brightness)!='number' || this.brightness == 0) throw new Error('Brightness with absolute value of zero would be completely dark.')
+        if(typeof(this.shear)!='number' || this.shear < 0 || this.shear > 1 ) throw new Error('Shear value is not a valid positive number or zero.')
+        if(typeof(this.rotation)!='number' || this.rotation < 0 || this.rotation > 1 ) throw new Error('Rotation value is not a valid positive number or zero.')
+        if(typeof(this.zoom)!='number' || this.zoom < 0 || this.zoom > 2 ) throw new Error('Zoom value is not a valid positive number up to 2 or zero.')
     },
     update: async function() {
       try {
@@ -51,10 +115,28 @@ export default {
             conditions: this.conditions,
             compounds: this.compounds,
             classes: this.classes,
-            rotate: this.rotate,
+            center: this.center,
             normalise: this.normalise,
             width: this.width,
-            height: this.height
+            height: this.height,
+            data_format: this.data_format,
+            color_format: this.color_format,
+            rescale: this.rescale,
+            rounds: this.rounds,
+            transform: this.transform,
+            random: this.random,
+            keep: this.keep,
+            rotation: this.rotation,
+            width_shift: this.width_shift,
+            height_shift: this.height_shift,
+            shear: this.shear,
+            channel_shift: this.channel_shift,
+            brightness: this.brightness,
+            zoom: this.zoom,
+            horizontal_flip: this.horizontal_flip,
+            vertical_flip: this.vertical_flip,
+            fill_mode: this.fill_mode,
+            cval: this.cval
           },
           {
             headers: { token: this.token }
@@ -78,24 +160,60 @@ export default {
         .then(res => {
           if (res.data) {
             const {
-              rotate,
-              normalise,
               patients,
               conditions,
               compounds,
               classes,
+              center,
+              normalise,
               width,
               height,
+              data_format,
+              color_format,
+              rescale,
+              rounds,
+              transform,
+              random,
+              keep,
+              rotation,
+              width_shift,
+              height_shift,
+              shear,
+              channel_shift,
+              brightness,
+              zoom,
+              horizontal_flip,
+              vertical_flip,
+              fill_mode,
+              cval,
               date
             } = res.data;
-            this.rotate= rotate;
-            this.normalise= normalise;
-            this.patients= patients;
-            this.conditions= conditions;
-            this.compounds= compounds;
-            this.classes= classes;
-            this.width= width;
-            this.height= height;
+            this.patients = patients;
+            this.conditions = conditions;
+            this.compounds = compounds;
+            this.classes = classes;
+            this.center = center;
+            this.normalise = normalise;
+            this.width = width;
+            this.height = height;
+            this.data_format = data_format;
+            this.color_format = color_format;
+            this.rescale = rescale;
+            this.rounds = rounds;
+            this.transform = transform;
+            this.random = random;
+            this.keep = keep;
+            this.rotation = rotation;
+            this.width_shift = width_shift;
+            this.height_shift = height_shift;
+            this.shear = shear;
+            this.channel_shift = channel_shift;
+            this.brightness = brightness;
+            this.zoom = zoom;
+            this.horizontal_flip = horizontal_flip;
+            this.vertical_flip = vertical_flip;
+            this.fill_mode = fill_mode;
+            this.cval = cval;
             this.date = date;
           }
         })
@@ -142,75 +260,143 @@ export default {
 <transition>
         <div class="proceed-dataset-mask" @click="close" v-show="show">
             <div class="proceed-dataset-container" @click.stop>
-                <span :value="date"></span>
-                <div>
-                   <form class="form">
-			          <ul class="ul-list">
-      					<li id="li_1" class="li-ele">
-		              <label class="description" for="element_1">Final Width: </label>
-			            <div data-tip="Final Width: Images final after rescaling, prior to training.">
-                  <input id="element_1" name="element_1" class="field" type="number"   v-model="width"></div>
-		            </li>
-            		<li id="li_2" class="li-ele">
-		              <label class="description" for="element_2">Final Height: </label>
+
+                  <table style="width: 100%; padding: 5px;" >
+<tbody>
+<tr>
+<td><label class="description" for="width">Width: </label>
+			            <div data-tip="Width: Images final width after rescaling, prior to training.">
+                  <input id="width" name="width" class="field" type="number"   v-model="width">
+                  </div></td>
+<td><label class="description" for="height">Height: </label>
 			            <div data-tip="Final Height: Images final after rescaling, prior to training.">
-			              <input id="element_2" name="element_2" class="field" type="number"   v-model="height">
-                  </div>
-	            	</li>
-                <li id="li_3" class="li-ele">
-		              <label class="description" for="element_3">Rotate: </label>
-		              <div data-tip="Rotate: rotates the image in all direction prior to training.">
-			              <input id="element_3" name="element_3" class="field" type="checkbox"   v-model="rotate"> </div>
-		            </li>
-                <li id="li_3" class="li-ele">
-		              <label class="description" for="element_3">Normalise: </label>
-		              <div data-tip="Normalise: normalises the color spetrum of between all images.">
-			              <input id="element_3" name="element_3" class="field" type="checkbox"   v-model="normalise"> </div>
-		            </li>
-                <li id="li_4" class="li-ele">
-		              <label class="description" for="element_4">Patients: </label>
+			              <input id="height" name="height" class="field" type="number"   v-model="height">
+                  </div></td>
+<td><label class="description" for="center">Center: </label>
+		              <div data-tip="Center: center the batch of images to the feature-wise mean.">
+			              <input id="center" name="center" class="field" type="checkbox"   v-model="center"> </div></td>
+<td><label class="description" for="normalise">Normalise: </label>
+		              <div data-tip="Normalise: normalises the batch of images to the feature_wise standard deviation.">
+			              <input id="element_3" name="element_3" class="field" type="checkbox"   v-model="normalise"></div></td>
+<td><label class="description" for="rescale">Rescale: </label>
+			            <div data-tip="Rescale: rescale ratio for every pixel.">
+                  <input id="rescale" name="rescale" class="field" type="number"   v-model="rescale">
+                  </div></td>
+<td><label class="description" for="rounds">Rounds: </label>
+			            <div data-tip="Rounds: augmentation rounds for each image loaded.">
+                  <input id="rounds" name="rounds" class="field" type="number"   v-model="rounds">
+                  </div></td>
+<td><label class="description" for="transform">Transform: </label>
+			            <div data-tip="Transform: transform the augmentation images accordingly to the following parameters.">
+                  <input id="transform" name="transform" class="field" type="checkbox"   v-model="transform">
+                  </div></td>
+</tr>
+<tr>
+<td><label class="description" for="patients">Patients: </label>
 		              <div data-tip="Patients: this allows to select images from specific patients (Leave empty for all).">
-                    <select multiple="true"  id="element_4" name="element_4" class="field"  v-model="patients">
+                    <select multiple="true"  id="patients" name="patients" class="field"  v-model="patients">
                          <option value="-1">All</option>
                          <option :value="patient" v-for="patient in patients_opts">{{ patient }}</option>
                     </select>
-		              </div>
-		            </li>
-                <li id="li_4" class="li-ele">
-		              <label class="description" for="element_4">Conditions: </label>
+		              </div></td>
+<td><label class="description" for="conditions">Conditions: </label>
 		              <div data-tip="Conditions: this allows to select images from specific conditions (Leave empty for all).">
-		                <select multiple="true"  id="element_4" name="element_4" class="field"  v-model="conditions">
+		                <select multiple="true"  id="conditions" name="conditions" class="field"  v-model="conditions">
                          <option value="-1">All</option>
                          <option :value="condition" v-for="condition in conditions_opts">{{ condition }}</option>
                     </select>
-		              </div>
-		            </li>
-                <li id="li_4" class="li-ele">
-		              <label class="description" for="element_4">Compounds: </label>
+		              </div></td>
+<td><label class="description" for="compounds">Compounds: </label>
 		              <div data-tip="Compounds: this allows to select images from specific compounds (Leave empty for all).">
-		                <select multiple="true"  id="element_4" name="element_4" class="field"  v-model="compounds">
+		                <select multiple="true"  id="compounds" name="compounds" class="field"  v-model="compounds">
                          <option value="-1">All</option>
                          <option :value="compound" v-for="compound in compounds_opts">{{ compound }}</option>
                     </select>
-		              </div>
-		            </li>
-                <li id="li_4" class="li-ele">
-		              <label class="description" for="element_4">Classes: </label>
+		              </div></td>
+<td><label class="description" for="classes">Classes: </label>
 		              <div data-tip="Classes: this allows to select images from specific classes (Leave empty for all or select at least 2).">
-		                <select multiple="true"  id="element_4" name="element_4" class="field"  v-model="classes">
+		                <select multiple="true"  id="classes" name="classes" class="field"  v-model="classes">
                          <option value="-1">All</option>
                          <option :value="classi" v-for="classi in classes_opts">{{ classi }}</option>
                     </select>
-		              </div>
-		            </li>
-                 <li id="li_3" class="li-ele">
-                    <label class="description" for="date_dataset">Last Modified </label>
+		              </div></td>
+<td><label class="description" for="random">Random: </label>
+			            <div data-tip="Random: the transformation uses random parameters within the ranges hereby set or static if false.">
+                  <input id="random" name="random" class="field" type="checkbox"   v-model="random">
+                  </div></td>
+<td><label class="description" for="keep">Keep Original: </label>
+			            <div data-tip="Keep Original: keeps original images alongside with the augmented ones.">
+                  <input id="keep" name="keep" class="field" type="checkbox"   v-model="keep">
+                  </div></td>
+<td><label class="description" for="fill_mode">Fill Mode: </label>
+		              <div data-tip="Fill Mode: selects the way of fill tensor data in case of misplacement during transformations.">
+		                <select id="fill_mode" name="fill_mode" class="field"  v-model="fill_mode">
+                          <option :value="fill" v-for="fill in fill_mode_opts">{{ fill }}</option>
+                    </select>
+		              </div></td>
+</tr>
+<tr>
+<td><label class="description" for="dataformat">Data Format: </label>
+		              <div data-tip="Data Format: determines the positioning of the color channels in the tensor.">
+		                <select id="dataformat" name="dataformat" class="field"  v-model="data_format">
+                          <option :value="data" v-for="data in data_format_opts">{{ data }}</option>
+                    </select>
+		              </div></td>
+<td><label class="description" for="colorformat">Color Format: </label>
+		              <div data-tip="Color Format: determines the channel number in the tensor.">
+		                <select id="colorformat" name="colorformat" class="field"  v-model="color_format">
+                          <option :value="color" v-for="color in color_format_opts">{{ color }}</option>
+                    </select>
+		              </div></td>
+<td><label class="description" for="rotation">Rotation: </label>
+			            <div data-tip="Rotation: determines the max rotation in degrees of the image.">
+                  <input id="rotation" name="rotation" class="field" type="number"   v-model="rotation">
+                  </div></td>
+<td><label class="description" for="shear">Shear: </label>
+			            <div data-tip="Shear: determines the max shear of the image.">
+                  <input id="shear" name="shear" class="field" type="number"   v-model="shear">
+                  </div></td>
+<td><label class="description" for="brightness">Brightness: </label>
+			            <div data-tip="Brightness: determines the percentage of brightness of original image.">
+                  <input id="brightness" name="brightness" class="field" type="number"   v-model="brightness">
+                  </div></td>
+<td><label class="description" for="zoom">Zoom: </label>
+			            <div data-tip="Zoom: determines the percentual zoom applied to image.">
+                  <input id="zoom" name="zoom" class="field" type="number"   v-model="zoom">
+                  </div></td>
+<td><label class="description" for="cval">CVal: </label>
+			            <div data-tip="CVal: determines the value of the pixels in case of fillmode=constant.">
+                  <input id="cval" name="cval" class="field" type="number"   v-model="cval">
+                  </div></td>
+</tr>
+<tr>
+<td><label class="description" for="hflip">Horizontal Flip: </label>
+			            <div data-tip="Horizontal Flip: determines if image can be flipped horizontally.">
+                  <input id="hflip" name="hflip" class="field" type="checkbox"   v-model="horizontal_flip">
+                  </div></td>
+<td><label class="description" for="vflip">Vertical Flip: </label>
+			            <div data-tip="Vertical Flip: determines if image can be flipped vertically.">
+                  <input id="vflip" name="vflip" class="field" type="checkbox"   v-model="vertical_flip">
+                  </div></td>
+<td><label class="description" for="ws">Width Shift: </label>
+			            <div data-tip="Width Shift: determines the max value of the width shift.">
+                  <input id="ws" name="ws" class="field" type="number"   v-model="width_shift">
+                  </div></td>
+<td><label class="description" for="hs">Height Shift: </label>
+			            <div data-tip="Height Shift: determines the max value of the height shift.">
+                  <input id="hs" name="hs" class="field" type="number"   v-model="height_shift">
+                  </div></td>
+<td><label class="description" for="cs">Channel Shift: </label>
+			            <div data-tip="Channel Shift: determines the max value of the channel shift.">
+                  <input id="cs" name="cs" class="field" type="number"   v-model="channel_shift">
+                  </div></td>
+<td><label class="description" for="date_dataset">Last Modified </label>
                      <div data-tip="Date: represents the date when the dataset configuration was last updated."> </div>
-                     <output id="date_dataset" name="date_dataset" class="field">{{date}}</output>
-                     </li>
-			          </ul>
-		            </form>
-                </div>
+                     <output id="date_dataset" name="date_dataset" class="field">{{date}}</output></td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
                 <error :show="error" @close="error=null"></error>
             </div>
              <div class="proceed-dataset-footer" @click.stop>
@@ -234,7 +420,7 @@ export default {
   transition: opacity 0.3s ease;
 }
 .proceed-dataset-container {
-  width: 500px;
+  width: 1300px;
   height: 470px;
   margin: 200px auto 0;
   padding: 20px 20px;
@@ -338,5 +524,4 @@ export default {
   width: 170px;
   height: 30px;
 }
-
 </style>
