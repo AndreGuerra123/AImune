@@ -1,5 +1,6 @@
 <script>
 import axios from "axios";
+
 const ax = axios.create({
   baseURL: "https://209.97.191.228:3000/",
   timeout: 2000
@@ -47,13 +48,11 @@ export default {
         });
     },
     updateEditor: function() {
-      let editor = new KerasModelEditor(
-        this.architecture.file,
-        "keras-editor",
-        this.configuritas
-      );
-      if (this.architecture.file) {
-        editor.show();
+      if(this.architecture.file){
+         console.log(typeof(this.architecture.file))
+         console.log(this.architecture.file)
+         // let editor = new KerasModelEditor(JSON.parse(this.architecture.file),"keras-editor", this.configuritas );
+         // editor.show();
       }
     },
     refocus: async function(value) {
