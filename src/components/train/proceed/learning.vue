@@ -14,15 +14,6 @@
           color: "#007AFF",
           strokeWidth: 5,
           trailWidth: 5,
-          step: (state, bar) => {
-            if (bar.value() > 0) {
-              var value = Math.round(bar.value() * 100) + " %";
-              if (this.job.description) {
-                value = value + " - " + this.job.description;
-              }
-              bar.setText(value);
-            }
-          }
         },
         job: {
           _id: null,
@@ -81,6 +72,7 @@
             this.error = err.toString();
           });
           this.update()
+          this.resetProgressBar()
       },
       reset: async function () {
         await ax
@@ -96,6 +88,10 @@
             this.error = err.toString();
           });
           this.update()
+      },
+      resetProgressBar: function(){
+        this.$refs.line.set(0)
+        this.$refs.line.setText("")
       },
       restart: async function(){
         await this.reset()
@@ -131,7 +127,10 @@
       job: {
         handler: function (newq, oldq) {
           this.error = this.job.error; //Shows the error as modal
-          this.$refs.line.animate(this.job.value); //updates progressbar
+          if(this.job.value){
+            this.$refs.line.set(this.job.value)
+            this.$refs.line.setText(Math.floor(this.job.value*100).toString()+' % '+this.job.description)
+          }
         },
         deep: true
       }

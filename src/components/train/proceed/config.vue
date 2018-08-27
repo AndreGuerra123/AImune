@@ -230,16 +230,16 @@ export default {
                          <option :value="los" v-for="los in loss_opts">{{ los }}</option>
                     </select></td>
               <td><label class="description" for="element_2">Optimiser: </label>
-			              <div data-tip="Optimiser: respresents the algorithm which performes the optimisation."> </div>
+			              <div data-tip="Optimiser: represents the algorithm which performes the optimisation."> </div>
 			              <select id="element_4" name="element_4" class="field"  v-model="optimiser">
                          <option :value="opt" v-for="opt in optimiser_opts">{{ opt }}</option>
                     </select></td>
               <td><label class="description" for="element_3">Epochs: </label>
 		                <div data-tip="Epochs: represents the total number of iterations to be performed."> </div>
-			              <input id="element_3" name="element_3" class="field" type="number"   v-model="epochs"></td>
+			              <input id="element_3" name="element_3" class="field" type="number"   v-model.number="epochs"></td>
               <td><label class="description" for="element_3">Batch Size: </label>
 		                <div data-tip="Batch Size: represents the number of samples to be loaded per iteration."> </div>
-			              <input id="element_3" name="element_3" class="field" type="number" v-model="batchsize"></td>
+			              <input id="element_3" name="element_3" class="field" type="number" v-model.number="batchsize"></td>
               </tr>
               <tr>
               <td><label class="description" for="shuffle">Shuffle: </label>
@@ -247,24 +247,24 @@ export default {
 			              <input id="shuffle" name="shuffle" class="field" type="checkbox" v-model="shuffle"></td>
               <td><label class="description" for="seed">Seed: </label>
 		                <div data-tip="Seed: seed value for random number generator."> </div>
-			              <input id="seed" name="seed" class="field" type="number" v-model="seed"></td>
+			              <input id="seed" name="seed" class="field" type="number" v-model.number="seed"></td>
               <td><label class="description" for="vsplit">Validation Split: </label>
 		                <div data-tip="Validation Split: percentage of data used for test/validation."> </div>
-			              <input id="vsplit" name="vsplit" class="field" type="number" v-model="validation_split"></td>
+			              <input id="vsplit" name="vsplit" class="field" type="number" v-model.number="validation_split"></td>
               <td><label class="description" for="lr">Learning Rate: </label>
 		                <div data-tip="Learning Rate: optimiser initial learning rate."> </div>
-			              <input id="lr" name="lr" class="field" type="number" v-model="lr"></td>
+			              <input id="lr" name="lr" class="field" type="number" v-model.number="lr"></td>
               </tr>
               <tr>
-              <td><label class="description" for="momentum">Momentum: </label> 		                <div data-tip="Momemtum: optimiser initial momentum."> </div> 			              <input id="momentum" name="momentum" class="field" type="number" v-model="momentum"></td>
-              <td><label class="description" for="decay">Decay: </label> 		                <div data-tip="Decay: optimiser initial decay."> </div> 			              <input id="decay" name="decay" class="field" type="number" v-model="decay"></td>
+              <td><label class="description" for="momentum">Momentum: </label> 		                <div data-tip="Momemtum: optimiser initial momentum."> </div> 			              <input id="momentum" name="momentum" class="field" type="number" v-model.number="momentum"></td>
+              <td><label class="description" for="decay">Decay: </label> 		                <div data-tip="Decay: optimiser initial decay."> </div> 			              <input id="decay" name="decay" class="field" type="number" v-model.number="decay"></td>
               <td><label class="description" for="nesterov">Nesterov: </label> 		                <div data-tip="Nesterov: optimiser with Nesterov momentum."> </div> 			              <input id="nesterov" name="nesterov" class="field" type="checkbox" v-model="nesterov"></td>
-              <td><label class="description" for="rho">Rho: </label> 		                <div data-tip="Rho: optimiser initial rho."> </div> 			              <input id="rho" name="rho" class="field" type="number" v-model="rho"></td>
+              <td><label class="description" for="rho">Rho: </label> 		                <div data-tip="Rho: optimiser initial rho."> </div> 			              <input id="rho" name="rho" class="field" type="number" v-model.number="rho"></td>
               </tr>
               <tr>
-              <td><label class="description" for="shuffle">Epsilon: </label> 		                <div data-tip="Epsilon: optimiser epsilon parameter."> </div> 			              <input id="epsilon" name="epsilon" class="field" type="number" v-model="epsilon"></td>
-              <td><label class="description" for="beta1">Beta 1: </label> 		                <div data-tip="Beta1: optimiser beta1 parameter."> </div> 			              <input id="beta1" name="beta1" class="field" type="number" v-model="beta1"></td>
-              <td><label class="description" for="beta2">Beta 2: </label> 		                <div data-tip="Beta2: optimiser beta2 parameter."> </div> 			              <input id="beta2" name="beta2" class="field" type="number" v-model="beta2"></td>
+              <td><label class="description" for="shuffle">Epsilon: </label> 		                <div data-tip="Epsilon: optimiser epsilon parameter."> </div> 			              <input id="epsilon" name="epsilon" class="field" type="number" v-model.number="epsilon"></td>
+              <td><label class="description" for="beta1">Beta 1: </label> 		                <div data-tip="Beta1: optimiser beta1 parameter."> </div> 			              <input id="beta1" name="beta1" class="field" type="number" v-model.number="beta1"></td>
+              <td><label class="description" for="beta2">Beta 2: </label> 		                <div data-tip="Beta2: optimiser beta2 parameter."> </div> 			              <input id="beta2" name="beta2" class="field" type="number" v-model.number="beta2"></td>
               <td><label class="description" for="amsgrad">amsGrad: </label> 		                <div data-tip="amsGrad: optimiser amsGrad parameter."> </div> 			              <input id="amsgrad" name="amsgrad" class="field" type="checkbox" v-model="amsgrad"></td>
               </tr>
               <tr>

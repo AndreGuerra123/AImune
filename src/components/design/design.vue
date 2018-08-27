@@ -49,10 +49,9 @@ export default {
     },
     updateEditor: function() {
       if(this.architecture.file){
-         console.log(typeof(this.architecture.file))
-         console.log(this.architecture.file)
-         // let editor = new KerasModelEditor(JSON.parse(this.architecture.file),"keras-editor", this.configuritas );
-         // editor.show();
+         let decoded = atob(this.architecture.file)
+         let editor = new KerasModelEditor(JSON.parse(decoded),"keras-editor", this.configuritas);
+         editor.show();
       }
     },
     refocus: async function(value) {

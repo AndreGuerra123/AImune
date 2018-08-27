@@ -11,7 +11,7 @@ export default {
     return {
       name: null,
       shared: false,
-      architecture: {name:null},
+      archid:null,
       error: null,
       archlist: null,
     };
@@ -24,7 +24,7 @@ export default {
     reset: function(){
       this.name=null;
       this.shared=false;
-      this.architecture={name:null};
+      this.archid = null,
       this.error=null;
       this.archlist=null;
     },
@@ -45,7 +45,7 @@ export default {
         throw new Error("Please select a valid name for the new model.")
       }else if(this.used()){
         throw new Error("Please select a unique name for the new model.")
-      }else if(!this.architecture){
+      }else if(!this.archid){
         throw new Error("Please select a valid architecture for the new model.")
       }
 
@@ -69,7 +69,7 @@ export default {
             user: this.username,
             date: new Date(),
             shared: this.shared,
-            architecture: this.architecture
+            archid: this.archid
           },
           {
             headers: { token: this.token }
@@ -123,8 +123,8 @@ export default {
                     </li>
                     <li class='trainnew-entry-first'>
                     <label class="trainnew-form-label">Model Architecture</label>
-                    <select class="trainnew-form-control" v-model="architecture">
-                         <option :value="option" v-for="option in archlist">{{ option.name }}</option>
+                    <select class="trainnew-form-control" v-model="archid">
+                         <option :value="arch._id" v-for="arch in archlist">{{ arch.name }}</option>
                     </select>
                     </li>
                     <li class='trainnew-entry-first'>

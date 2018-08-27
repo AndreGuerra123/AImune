@@ -266,25 +266,25 @@ export default {
 <tr>
 <td><label class="description" for="width">Width: </label>
 			            <div data-tip="Width: Images final width after rescaling, prior to training.">
-                  <input id="width" name="width" class="field" type="number"   v-model="width">
+                  <input id="width"  v-model.number="width" name="width" class="field" type="number"  >
                   </div></td>
 <td><label class="description" for="height">Height: </label>
 			            <div data-tip="Final Height: Images final after rescaling, prior to training.">
-			              <input id="height" name="height" class="field" type="number"   v-model="height">
+			              <input id="height" v-model.number="height" name="height" class="field" type="number"   >
                   </div></td>
 <td><label class="description" for="center">Center: </label>
 		              <div data-tip="Center: center the batch of images to the feature-wise mean.">
 			              <input id="center" name="center" class="field" type="checkbox"   v-model="center"> </div></td>
 <td><label class="description" for="normalise">Normalise: </label>
 		              <div data-tip="Normalise: normalises the batch of images to the feature_wise standard deviation.">
-			              <input id="element_3" name="element_3" class="field" type="checkbox"   v-model="normalise"></div></td>
+			              <input id="element_3" v-model="normalise" name="element_3" class="field" type="checkbox"   ></div></td>
 <td><label class="description" for="rescale">Rescale: </label>
 			            <div data-tip="Rescale: rescale ratio for every pixel.">
-                  <input id="rescale" name="rescale" class="field" type="number"   v-model="rescale">
+                  <input id="rescale" v-model.number="rescale" name="rescale" class="field" type="number"   >
                   </div></td>
 <td><label class="description" for="rounds">Rounds: </label>
 			            <div data-tip="Rounds: augmentation rounds for each image loaded.">
-                  <input id="rounds" name="rounds" class="field" type="number"   v-model="rounds">
+                  <input id="rounds" v-model.number="rounds" name="rounds" class="field" type="number"   >
                   </div></td>
 <td><label class="description" for="transform">Transform: </label>
 			            <div data-tip="Transform: transform the augmentation images accordingly to the following parameters.">
@@ -350,23 +350,23 @@ export default {
 		              </div></td>
 <td><label class="description" for="rotation">Rotation: </label>
 			            <div data-tip="Rotation: determines the max rotation in degrees of the image.">
-                  <input id="rotation" name="rotation" class="field" type="number"   v-model="rotation">
+                  <input id="rotation"   v-model.number="rotation" name="rotation" class="field" type="number"  >
                   </div></td>
 <td><label class="description" for="shear">Shear: </label>
 			            <div data-tip="Shear: determines the max shear of the image.">
-                  <input id="shear" name="shear" class="field" type="number"   v-model="shear">
+                  <input id="shear" v-model="shear" name="shear" class="field" type="number"   >
                   </div></td>
 <td><label class="description" for="brightness">Brightness: </label>
 			            <div data-tip="Brightness: determines the percentage of brightness of original image.">
-                  <input id="brightness" name="brightness" class="field" type="number"   v-model="brightness">
+                  <input id="brightness" v-model.number="brightness" name="brightness" class="field" type="number"   >
                   </div></td>
 <td><label class="description" for="zoom">Zoom: </label>
 			            <div data-tip="Zoom: determines the percentual zoom applied to image.">
-                  <input id="zoom" name="zoom" class="field" type="number"   v-model="zoom">
+                  <input id="zoom" v-model.number="zoom" name="zoom" class="field" type="number"   >
                   </div></td>
 <td><label class="description" for="cval">CVal: </label>
 			            <div data-tip="CVal: determines the value of the pixels in case of fillmode=constant.">
-                  <input id="cval" name="cval" class="field" type="number"   v-model="cval">
+                  <input id="cval" v-model.number="cval" name="cval" class="field" type="number"   >
                   </div></td>
 </tr>
 <tr>
@@ -380,15 +380,15 @@ export default {
                   </div></td>
 <td><label class="description" for="ws">Width Shift: </label>
 			            <div data-tip="Width Shift: determines the max value of the width shift.">
-                  <input id="ws" name="ws" class="field" type="number"   v-model="width_shift">
+                  <input id="ws" v-model.number="width_shift" name="ws" class="field" type="number"   >
                   </div></td>
 <td><label class="description" for="hs">Height Shift: </label>
 			            <div data-tip="Height Shift: determines the max value of the height shift.">
-                  <input id="hs" name="hs" class="field" type="number"   v-model="height_shift">
+                  <input id="hs" v-model.number="height_shift" name="hs" class="field" type="number">
                   </div></td>
 <td><label class="description" for="cs">Channel Shift: </label>
 			            <div data-tip="Channel Shift: determines the max value of the channel shift.">
-                  <input id="cs" name="cs" class="field" type="number"   v-model="channel_shift">
+                  <input id="cs" v-model.number="channel_shift" name="cs" class="field" type="number"   >
                   </div></td>
 <td><label class="description" for="date_dataset">Last Modified </label>
                      <div data-tip="Date: represents the date when the dataset configuration was last updated."> </div>

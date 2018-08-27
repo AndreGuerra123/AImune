@@ -63,7 +63,6 @@ export default {
         .then(res => {
           this.status = res.data;
         }).catch(err =>{
-             console.log(err)
              this.error = err.toString();
         });
     },
