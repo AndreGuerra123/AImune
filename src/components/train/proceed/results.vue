@@ -1,4 +1,5 @@
 <script>
+import axios from "axios";
 const ax = axios.create({
   baseURL: "https://209.97.191.228:3000/",
   timeout: 10000
@@ -8,20 +9,33 @@ export default {
   props: ["show", "token", "username","model"],
   data: function() {
     return {
-      results:null
+      results:null,
+      error:null
     };
   },
   methods: {
+    setFirst: function(){
+      this.results=this.divs[0]
+      this.idx = 0
+    },
     update: async function(){
-        await ax.get("/results", {
-          params: { source: this.model._id},
-          header: { token: this.token }
-        })
-        .then(res => {
-          this.results = res.data
-        }).catch(err =>{
-             this.error = err.toString();
-        });
+        await ax
+          .post(
+            "/results", {
+              source: this.model._id
+            }, {
+              headers: {
+                token: this.token
+              }
+            }
+          ).then(res=>{
+             const{div,script}=res.data
+             this.results=div
+             eval(script)
+          }).catch(err => {
+            throw new Error(err)
+            this.error = err.toString();
+          });
     },
     close: function() {
       this.$emit("close");
@@ -29,7 +43,7 @@ export default {
   },
   watch:{
     show: function(n,o){
-      this.update()
+      if(n) this.update()
     }
   },
   mounted: function() {
@@ -41,18 +55,26 @@ export default {
   }
 };
 </script>
-
 <template name="proceed-results">
 <transition>
         <div class="proceed-results-mask" @click="close" v-show="show">
-            <div class="proceed-results-container" @click.stop>
-             <div v-html="results"></div>
+            <div class='proceed-results-container' v-bar @click.stop>
+                  <div>
+                    <div v-for="temp in results">
+                      <div v-html="temp"></div>
+                    </div>
+                  </div>
             </div>
+          <error :show="error" @close="error = null"></error>
         </div>
 </transition>
 </template>
 
 <style>
+
+::-webkit-scrollbar {
+    display: none;
+  }
 
 .proceed-results-mask {
   position: fixed;
@@ -65,8 +87,8 @@ export default {
   transition: opacity 0.3s ease;
 }
 .proceed-results-container {
-  width: 800px;
-  height: 600px;
+  width: 1040px;
+  height: 440px;
   margin: 200px auto 0;
   padding: 20px 20px;
   background-color: #fff;
@@ -88,6 +110,52 @@ export default {
 }
 .proceed-results-default-button:hover {
   background-color: #ec70a8;
+}
+
+.vb > .vb-dragger {
+    z-index: 5;
+    width: 12px;
+    right: 0;
+}
+
+.vb > .vb-dragger > .vb-dragger-styler {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: rotate3d(0,0,0,0);
+    transform: rotate3d(0,0,0,0);
+    -webkit-transition:
+        background-color 100ms ease-out,
+        margin 100ms ease-out,
+        height 100ms ease-out;
+    transition:
+        background-color 100ms ease-out,
+        margin 100ms ease-out,
+        height 100ms ease-out;
+    background-color: rgba(48, 121, 244,.1);
+    margin: 5px 5px 5px 0;
+    border-radius: 20px;
+    height: calc(100% - 10px);
+    display: block;
+}
+
+.vb.vb-scrolling-phantom > .vb-dragger > .vb-dragger-styler {
+    background-color: rgba(48, 121, 244,.3);
+}
+
+.vb > .vb-dragger:hover > .vb-dragger-styler {
+    background-color: rgba(48, 121, 244,.5);
+    margin: 0px;
+    height: 100%;
+}
+
+.vb.vb-dragging > .vb-dragger > .vb-dragger-styler {
+    background-color: rgba(48, 121, 244,.5);
+    margin: 0px;
+    height: 100%;
+}
+
+.vb.vb-dragging-phantom > .vb-dragger > .vb-dragger-styler {
+    background-color: rgba(48, 121, 244,.5);
 }
 
 </style>

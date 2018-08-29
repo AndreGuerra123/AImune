@@ -10,11 +10,13 @@ Vue.component('multiselect', Multiselect)
 import VueProgress from 'vue-progress'
 Vue.use(VueProgress)
 
+import Vuebar from 'vuebar';
+Vue.use(Vuebar);
+
 import VueParticles from 'vue-particles'
 Vue.use(VueParticles)
 
 import VueTimeago from 'vue-timeago'
-
 Vue.use(VueTimeago, {
   name: 'timeago', // Component name, `Timeago` by default
   locale: 'en'})
@@ -47,7 +49,7 @@ import proceedDataset from './components/train/proceed/dataset.vue'
 import proceedLearning from './components/train/proceed/learning.vue'
 
 import proceedResults from './components/train/proceed/results.vue'
-
+import Predict from './components/predict/predict.vue'
 
 Vue.component('load', Loader);
 Vue.component('error', Error);
@@ -61,6 +63,7 @@ Vue.component('traindelete',trainDelete);
 Vue.component('trainclone',trainClone);
 Vue.component('trainnew',trainNew);
 Vue.component('trainproceed',trainProceed);
+Vue.component('predict',Predict)
 
 Vue.component('proceed-config', proceedConfig);
 Vue.component('proceed-dataset', proceedDataset);
